@@ -8,6 +8,8 @@
 !*.pas
 !*.res
 
+!report.dat
+
 !README.md
 
 Thumbs.db
