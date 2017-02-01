@@ -13,7 +13,7 @@ uses
   NxColumnClasses, NxScrollControl, NxCustomGridControl, NxCustomGrid,
   NxGrid, sGauge, sStatusBar, ShellApi, StrUtils, sTreeView, CommCtrl,
   frxClass, frxDBSet, sSkinProvider, acAlphaImageList, sGroupBox, ToolWin,
-  acCoolBar, psAPI, NxEdit, sRichEdit, MidasLib;
+  acCoolBar, psAPI, NxEdit, sRichEdit, MidasLib, acPNG;
 
 type
   TFormMain = class(TForm)
