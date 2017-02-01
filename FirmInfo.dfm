@@ -29,7 +29,7 @@ object FormFirmInfo: TFormFirmInfo
       Left = 1
       Top = 1
       Width = 591
-      Height = 58
+      Height = 62
       Align = alTop
       Alignment = taCenter
       AutoSize = False
@@ -41,6 +41,10 @@ object FormFirmInfo: TFormFirmInfo
       Font.Height = -21
       Font.Name = 'MS Sans Serif'
       Font.Style = []
+      Angle = 0
+      Shadow.Mode = smCustom
+      Shadow.OffsetKeeper.LeftTop = -3
+      Shadow.OffsetKeeper.RightBottom = 5
     end
   end
   object panelAdvanced: TsPanel
@@ -72,11 +76,18 @@ object FormFirmInfo: TFormFirmInfo
       Width = 117
       Height = 25
       Caption = #1047#1072#1087#1080#1089#1085#1072#1103' '#1082#1085#1080#1075#1072
-      TabOrder = 2
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = 14
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 3
       OnClick = BtnNBAddRecClick
-      SkinData.SkinSection = 'SPEEDBUTTON'
       ImageIndex = 0
       Images = FormMain.ImageList1
+      SkinData.CustomFont = True
+      SkinData.SkinSection = 'PAGECONTROL'
     end
     object BtnPrint: TsBitBtn
       Left = 406
@@ -84,11 +95,18 @@ object FormFirmInfo: TFormFirmInfo
       Width = 89
       Height = 25
       Caption = #1055#1077#1095#1072#1090#1100
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = 14
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
       TabOrder = 1
       OnClick = BtnPrintClick
-      SkinData.SkinSection = 'SPEEDBUTTON'
       ImageIndex = 4
       Images = FormMain.ImageList1
+      SkinData.CustomFont = True
+      SkinData.SkinSection = 'PAGECONTROL'
     end
     object BtnClose: TsBitBtn
       Left = 500
@@ -96,11 +114,18 @@ object FormFirmInfo: TFormFirmInfo
       Width = 89
       Height = 25
       Caption = #1047#1072#1082#1088#1099#1090#1100
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = 14
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
       TabOrder = 0
       OnClick = BtnCloseClick
-      SkinData.SkinSection = 'SPEEDBUTTON'
       ImageIndex = 22
       Images = FormMain.ImageList1
+      SkinData.CustomFont = True
+      SkinData.SkinSection = 'PAGECONTROL'
     end
     object BtnDocs: TsBitBtn
       Left = 46
@@ -108,12 +133,19 @@ object FormFirmInfo: TFormFirmInfo
       Width = 110
       Height = 25
       Caption = #1057#1090#1072#1090#1100#1103' '#1092#1080#1088#1084#1099
-      TabOrder = 3
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = 14
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 4
       Visible = False
       OnClick = BtnDocsClick
-      SkinData.SkinSection = 'SPEEDBUTTON'
       ImageIndex = 8
       Images = FormMain.ImageList1
+      SkinData.CustomFont = True
+      SkinData.SkinSection = 'PAGECONTROL'
     end
     object btnSendEmail: TsBitBtn
       Left = 284
@@ -121,11 +153,18 @@ object FormFirmInfo: TFormFirmInfo
       Width = 117
       Height = 25
       Caption = #1056#1072#1089#1089#1099#1083#1082#1072' '#1087#1086#1095#1090#1099
-      TabOrder = 4
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = 14
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 2
       OnClick = btnSendEmailClick
-      SkinData.SkinSection = 'SPEEDBUTTON'
       ImageIndex = 7
       Images = FormMain.ImageList1
+      SkinData.CustomFont = True
+      SkinData.SkinSection = 'PAGECONTROL'
     end
   end
   object reFirmInfo: TsRichEdit
@@ -137,7 +176,7 @@ object FormFirmInfo: TFormFirmInfo
     Align = alClient
     BevelInner = bvNone
     BevelOuter = bvNone
-    Color = 13946053
+    Color = clWhite
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -11
@@ -151,15 +190,6 @@ object FormFirmInfo: TFormFirmInfo
     TabOrder = 2
     OnKeyDown = reFirmInfoKeyDown
     Text = 'reFirmInfo'#13#10
-    BoundLabel.Indent = 0
-    BoundLabel.Font.Charset = DEFAULT_CHARSET
-    BoundLabel.Font.Color = clWindowText
-    BoundLabel.Font.Height = -11
-    BoundLabel.Font.Name = 'MS Sans Serif'
-    BoundLabel.Font.Style = []
-    BoundLabel.Layout = sclLeft
-    BoundLabel.MaxWidth = 0
-    BoundLabel.UseSkinColor = True
     SkinData.SkinSection = 'PANEL'
   end
 end

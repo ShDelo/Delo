@@ -164,7 +164,7 @@ object FormDocs: TFormDocs
         000000009999C17C7BB06A69A56463A36F6DA98381B3A6A5C300000000000000
         00000000000000000000000000FF}
       OnClick = btnCloseClick
-      SkinData.SkinSection = 'SPEEDBUTTON'
+      SkinData.SkinSection = 'PAGECONTROL'
     end
     object btnDocOpen: TsSpeedButton
       Left = 243
@@ -208,7 +208,7 @@ object FormDocs: TFormDocs
         54AFB78752FFB68652FFB78752FFB5844EFFB4824CFFB4824BFFB4824BFFB482
         4BFFB4824BFFB4824BFFB4824CFFB5844FFFB88955B000000000}
       OnClick = btnDocOpenClick
-      SkinData.SkinSection = 'SPEEDBUTTON'
+      SkinData.SkinSection = 'PAGECONTROL'
     end
   end
 end

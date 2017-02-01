@@ -76,7 +76,7 @@ object FormNotebookAdd: TFormNotebookAdd
         252525252525252526120E2C2B2B2B2B2B2B2B2B2B2B2B2B2C10162D2E2E2E2E
         2E2E2E2E2E2E2E2E2D1631170F0F0F0F0F0F0F0F0F0F0F0F1731}
       OnClick = btnAddClick
-      SkinData.SkinSection = 'SPEEDBUTTON'
+      SkinData.SkinSection = 'PAGECONTROL'
     end
     object btnCancel: TsSpeedButton
       Left = 298
@@ -113,7 +113,7 @@ object FormNotebookAdd: TFormNotebookAdd
         F9B4C5F98A9EF44749C8D6D5F0494BCB3A42D23A42D23A42D23A42D23A42D23A
         42D23A42D23A42D23A42D23A42D23A42D23A42D2494BCBD6D5F0}
       OnClick = btnCancelClick
-      SkinData.SkinSection = 'SPEEDBUTTON'
+      SkinData.SkinSection = 'PAGECONTROL'
     end
     object btnCreateRubr: TsSpeedButton
       Left = 372
@@ -176,17 +176,17 @@ object FormNotebookAdd: TFormNotebookAdd
       Height = 21
       Alignment = taLeftJustify
       BoundLabel.Active = True
-      BoundLabel.Caption = #1047#1072#1087#1080#1089#1072#1090#1100' '#1074' '#1088#1091#1073#1088#1080#1082#1091':'
-      BoundLabel.Indent = 2
       BoundLabel.Font.Charset = DEFAULT_CHARSET
       BoundLabel.Font.Color = clBlack
       BoundLabel.Font.Height = -11
       BoundLabel.Font.Name = 'MS Sans Serif'
       BoundLabel.Font.Style = []
+      BoundLabel.ParentFont = False
+      BoundLabel.Indent = 2
+      BoundLabel.Caption = #1047#1072#1087#1080#1089#1072#1090#1100' '#1074' '#1088#1091#1073#1088#1080#1082#1091':'
       BoundLabel.Layout = sclTopLeft
-      BoundLabel.MaxWidth = 0
-      BoundLabel.UseSkinColor = True
       SkinData.SkinSection = 'COMBOBOX'
+      VerticalAlignment = taAlignTop
       Style = csDropDownList
       Color = clWhite
       Font.Charset = DEFAULT_CHARSET
@@ -215,22 +215,21 @@ object FormNotebookAdd: TFormNotebookAdd
       TabOrder = 1
       SkinData.SkinSection = 'EDIT'
       BoundLabel.Active = True
-      BoundLabel.Caption = #1055#1088#1080#1084#1077#1095#1072#1085#1080#1077':'
-      BoundLabel.Indent = 2
       BoundLabel.Font.Charset = DEFAULT_CHARSET
       BoundLabel.Font.Color = clBlack
       BoundLabel.Font.Height = -11
       BoundLabel.Font.Name = 'MS Sans Serif'
       BoundLabel.Font.Style = []
+      BoundLabel.ParentFont = False
+      BoundLabel.Indent = 2
+      BoundLabel.Caption = #1055#1088#1080#1084#1077#1095#1072#1085#1080#1077':'
       BoundLabel.Layout = sclTopLeft
-      BoundLabel.MaxWidth = 0
-      BoundLabel.UseSkinColor = True
     end
     object cbOpenAfterAdding: TsCheckBox
       Left = 7
       Top = 100
-      Width = 251
-      Height = 19
+      Width = 248
+      Height = 17
       Caption = #1054#1090#1082#1088#1099#1090#1100' '#1079#1072#1087#1080#1089#1085#1091#1102' '#1082#1085#1080#1075#1091' '#1087#1086#1089#1083#1077' '#1076#1086#1073#1072#1074#1083#1077#1085#1080#1103
       TabOrder = 2
       SkinData.SkinSection = 'CHECKBOX'

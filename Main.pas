@@ -1041,7 +1041,7 @@ begin
       if RowVisible[i] then
         inc(n, 1);
       if Odd(n) then
-        C := $00EDE9EB {clMenuBar}
+        C := $00F0F0F0 {clBtnFace}
       else
         C := clWindow;
       for z := 0 to Columns.Count - 1 do

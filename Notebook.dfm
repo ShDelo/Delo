@@ -24,7 +24,6 @@ object FormNoteBook: TFormNoteBook
     Cursor = crSizeWE
     AutoSnap = False
     MinSize = 165
-    ResizeStyle = rsUpdate
     SkinData.SkinSection = 'SPLITTER'
   end
   object panelTree: TsPanel
@@ -42,7 +41,7 @@ object FormNoteBook: TFormNoteBook
       Height = 26
       Align = alTop
       TabOrder = 0
-      SkinData.SkinSection = 'BAR'
+      SkinData.SkinSection = 'BARPANEL'
       object BtnAddRubr: TsSpeedButton
         Left = 4
         Top = 2
@@ -54,8 +53,8 @@ object FormNoteBook: TFormNoteBook
         ShowHint = True
         OnClick = BtnAddRubrClick
         SkinData.SkinSection = 'SPEEDBUTTON'
-        ImageIndex = 17
         Images = FormMain.ImageList1
+        ImageIndex = 17
       end
       object BtnDeleteRubr: TsSpeedButton
         Left = 52
@@ -68,8 +67,8 @@ object FormNoteBook: TFormNoteBook
         ShowHint = True
         OnClick = BtnDeleteRubrClick
         SkinData.SkinSection = 'SPEEDBUTTON'
-        ImageIndex = 19
         Images = FormMain.ImageList1
+        ImageIndex = 19
       end
       object BtnRenameRubr: TsSpeedButton
         Left = 28
@@ -82,8 +81,8 @@ object FormNoteBook: TFormNoteBook
         ShowHint = True
         OnClick = BtnRenameRubrClick
         SkinData.SkinSection = 'SPEEDBUTTON'
-        ImageIndex = 20
         Images = FormMain.ImageList1
+        ImageIndex = 20
       end
       object BtnSendEmailAll: TsSpeedButton
         Left = 80
@@ -96,8 +95,8 @@ object FormNoteBook: TFormNoteBook
         ShowHint = True
         OnClick = BtnSendEmailAllClick
         SkinData.SkinSection = 'SPEEDBUTTON'
-        ImageIndex = 7
         Images = FormMain.ImageList1
+        ImageIndex = 7
       end
       object btnPrintAll: TsSpeedButton
         Left = 104
@@ -110,8 +109,8 @@ object FormNoteBook: TFormNoteBook
         ShowHint = True
         OnClick = btnPrintAllClick
         SkinData.SkinSection = 'SPEEDBUTTON'
-        ImageIndex = 4
         Images = FormMain.ImageList1
+        ImageIndex = 4
       end
       object btnDevider1: TsSpeedButton
         Left = 76
@@ -123,8 +122,8 @@ object FormNoteBook: TFormNoteBook
         ShowHint = False
         ButtonStyle = tbsDivider
         SkinData.SkinSection = 'SPEEDBUTTON'
-        ImageIndex = 4
         Images = FormMain.ImageList1
+        ImageIndex = 4
       end
     end
     object TVRubr: TsTreeView
@@ -149,15 +148,6 @@ object FormNoteBook: TFormNoteBook
       TabOrder = 1
       OnChange = TVRubrChange
       OnContextPopup = TVRubrContextPopup
-      BoundLabel.Indent = 0
-      BoundLabel.Font.Charset = DEFAULT_CHARSET
-      BoundLabel.Font.Color = clWindowText
-      BoundLabel.Font.Height = -11
-      BoundLabel.Font.Name = 'MS Sans Serif'
-      BoundLabel.Font.Style = []
-      BoundLabel.Layout = sclLeft
-      BoundLabel.MaxWidth = 0
-      BoundLabel.UseSkinColor = True
       SkinData.SkinSection = 'EDIT'
     end
   end

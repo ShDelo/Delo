@@ -71,7 +71,7 @@ object FormMailSend: TFormMailSend
         000000009999C17C7BB06A69A56463A36F6DA98381B3A6A5C300000000000000
         00000000000000000000000000FF}
       OnClick = btnCancelClick
-      SkinData.SkinSection = 'SPEEDBUTTON'
+      SkinData.SkinSection = 'PAGECONTROL'
     end
     object btnSend: TsSpeedButton
       Left = 263
@@ -211,7 +211,7 @@ object FormMailSend: TFormMailSend
         0000000000000000000000000000000000000000000000000000000000000000
         0000000000000000000000000000000000000000000000000000}
       OnClick = btnSendClick
-      SkinData.SkinSection = 'SPEEDBUTTON'
+      SkinData.SkinSection = 'PAGECONTROL'
     end
     object sGauge1: TsGauge
       Left = 12
@@ -221,6 +221,7 @@ object FormMailSend: TFormMailSend
       Visible = False
       SkinData.SkinSection = 'GAUGE'
       ForeColor = clBlack
+      MaxValue = 100
       Suffix = '%'
     end
     object btnEmailAdd: TsSpeedButton
@@ -428,16 +429,15 @@ object FormMailSend: TFormMailSend
       OnKeyPress = editToKeyPress
       SkinData.SkinSection = 'EDIT'
       BoundLabel.Active = True
-      BoundLabel.Caption = #1050#1086#1084#1091':'
-      BoundLabel.Indent = 2
       BoundLabel.Font.Charset = DEFAULT_CHARSET
       BoundLabel.Font.Color = clBlack
       BoundLabel.Font.Height = -11
       BoundLabel.Font.Name = 'MS Sans Serif'
       BoundLabel.Font.Style = []
+      BoundLabel.ParentFont = False
+      BoundLabel.Indent = 2
+      BoundLabel.Caption = #1050#1086#1084#1091':'
       BoundLabel.Layout = sclTopLeft
-      BoundLabel.MaxWidth = 0
-      BoundLabel.UseSkinColor = True
     end
     object editEmailList: TsListBox
       Left = 8
@@ -455,15 +455,6 @@ object FormMailSend: TFormMailSend
       ParentFont = False
       TabOrder = 1
       OnKeyUp = editEmailListKeyUp
-      BoundLabel.Indent = 0
-      BoundLabel.Font.Charset = DEFAULT_CHARSET
-      BoundLabel.Font.Color = clWindowText
-      BoundLabel.Font.Height = -11
-      BoundLabel.Font.Name = 'MS Sans Serif'
-      BoundLabel.Font.Style = []
-      BoundLabel.Layout = sclLeft
-      BoundLabel.MaxWidth = 0
-      BoundLabel.UseSkinColor = True
       SkinData.SkinSection = 'EDIT'
     end
   end
