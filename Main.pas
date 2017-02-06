@@ -661,7 +661,7 @@ var
 begin
   SGNapr.ClearRows;
   IBQuery1.Close;
-  IBQuery1.SQL.Text := 'select * from NAPRAVLENIE';
+  IBQuery1.SQL.Text := 'select * from NAPRAVLENIE where ACTIVITY = -1';
   IBQuery1.Open;
   IBQuery1.FetchAll;
   if IBQuery1.RecordCount = 0 then
