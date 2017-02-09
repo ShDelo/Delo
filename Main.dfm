@@ -10207,6 +10207,7 @@ object FormMain: TFormMain
   end
   object IBQuery1: TIBCQuery
     Connection = IBDatabase1
+    FetchRows = 1
     Left = 660
     Top = 420
   end

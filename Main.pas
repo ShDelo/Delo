@@ -15,6 +15,8 @@ uses
   acCoolBar, psAPI, NxEdit, sRichEdit, MidasLib, acPNG, DBAccess, IBC,
   MemDS, DB;
 
+function QueryCreate: TIBCQuery;
+
 type
   TFormMain = class(TForm)
     TimerReklamaPic: TTimer;
@@ -159,6 +161,17 @@ uses Logo, FirmInfo, Search, Notebook, NotebookAdd, MailSend, Docs, Math;
 {#BACKUP [changes].txt}
 {#BACKUP report.dat}
 {#BACKUP MapiEmail.pas}
+
+function QueryCreate: TIBCQuery;
+var
+  Query: TIBCQuery;
+begin
+  Query := TIBCQuery.Create(nil);
+  Query.Connection := FormMain.IBDatabase1;
+  Query.AutoCommit := True;
+  Query.FetchRows := 1;
+  result := Query;
+end;
 
 procedure TFormMain.WMGetMinMaxInfo(var M: TWMGetMinMaxInfo);
 begin
@@ -1001,8 +1014,7 @@ begin
   result := '';
   if (Trim(table) = '') or (Trim(id) = '') then
     exit;
-  Q := TIBCQuery.Create(FormMain);
-  Q.Connection := FormMain.IBDatabase1;
+  Q := QueryCreate;
   Q.Close;
   Q.Sql.Text := 'select * from ' + table + ' where id = ' + id;
   Q.Open;

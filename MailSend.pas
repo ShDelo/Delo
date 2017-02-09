@@ -250,8 +250,7 @@ begin
   begin
     if ListClear then
       List.Clear;
-    Q := TIBCQuery.Create(FormMailSend);
-    Q.Connection := FormMain.IBDatabase1;
+    Q := QueryCreate;
     Q.Close;
     Q.SQL.Text := 'select EMAIL from BASE where ID = :ID';
     Q.ParamByName('ID').AsString := ID;

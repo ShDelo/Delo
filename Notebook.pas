@@ -190,8 +190,7 @@ begin
   begin
     SGNotebook.BeginUpdate;
     SGNotebook.ClearRows;
-    Query := tIBCQuery.Create(FormNoteBook);
-    Query.Connection := FormMain.IBDatabase1;
+    Query := QueryCreate;
     QueryNotebook.Close;
     QueryNotebook.SQL.Text := 'select * from NOTE_BASE where ID_RUBRIKA = :ID_RUBRIKA';
     // ID выбраной рубрики, выводим все фирмы для этой рубрики.
@@ -534,8 +533,7 @@ begin
   CDS.CreateDataSet;
   frxDBDataset.DataSet := CDS;
   frxReport.LoadFromFile(AppPath + 'report.dat');
-  Q := tIBCQuery.Create(FormNoteBook);
-  Q.Connection := FormMain.IBDatabase1;
+  Q := QueryCreate;
   try
     for i := 0 to ID_List.Count - 1 do
     begin

@@ -77,8 +77,7 @@ var
   var
     x: integer;
   begin
-    QuerySearch := TIBCQuery.Create(FormSearch);
-    QuerySearch.Connection := FormMain.IBDatabase1;
+    QuerySearch := QueryCreate;
     QuerySearch.Close;
     QuerySearch.SQL.Text := Query;
     QuerySearch.Params[0].AsString := Param;
@@ -113,8 +112,7 @@ begin
       end
       else if editSearchIn.ItemIndex = 1 then
       begin {Город}
-        QuerySearch := TIBCQuery.Create(FormSearch);
-        QuerySearch.Connection := FormMain.IBDatabase1;
+        QuerySearch := QueryCreate;
         QuerySearch.Close;
         QuerySearch.SQL.Text := 'select * from GOROD where lower(NAME) like :NAME';
         QuerySearch.ParamByName('NAME').AsString := '%' + SearchString + '%';
@@ -176,8 +174,7 @@ begin
       end
       else if editSearchIn.ItemIndex = 7 then
       begin {Деятельность}
-        QuerySearch := TIBCQuery.Create(FormSearch);
-        QuerySearch.Connection := FormMain.IBDatabase1;
+        QuerySearch := QueryCreate;
         QuerySearch.Close;
         QuerySearch.SQL.Text := 'select * from NAPRAVLENIE where lower(NAME) like :NAME';
         QuerySearch.ParamByName('NAME').AsString := '%' + SearchString + '%';
