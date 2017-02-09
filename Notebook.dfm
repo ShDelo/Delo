@@ -364,26 +364,6 @@ object FormNoteBook: TFormNoteBook
       OnClick = btnPrintAllClick
     end
   end
-  object QueryNotebook: TIBQuery
-    BufferChunks = 1000
-    CachedUpdates = False
-    Left = 425
-    Top = 352
-  end
-  object IBDatabase1: TIBDatabase
-    LoginPrompt = False
-    IdleTimer = 0
-    SQLDialect = 3
-    TraceFlags = []
-    Left = 461
-    Top = 352
-  end
-  object IBTransaction1: TIBTransaction
-    Active = False
-    AutoStopAction = saNone
-    Left = 497
-    Top = 352
-  end
   object frxReport: TfrxReport
     Version = '4.9.32'
     DotMatrixReport = False
@@ -405,5 +385,15 @@ object FormNoteBook: TFormNoteBook
     BCDToCurrency = False
     Left = 639
     Top = 353
+  end
+  object QueryNotebook: TIBCQuery
+    Left = 435
+    Top = 352
+  end
+  object IBDatabase1: TIBCConnection
+    Port = '3050'
+    LoginPrompt = False
+    Left = 467
+    Top = 352
   end
 end

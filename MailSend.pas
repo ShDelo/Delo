@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls, Buttons, sSpeedButton, StdCtrls, sListBox,
   sEdit, ExtCtrls, sPanel, ImgList, acAlphaImageList, IBQuery, IniFiles,
-  MapiEmail, sGauge, sCheckBox, sMemo, sLabel;
+  MapiEmail, sGauge, sCheckBox, sMemo, sLabel, IBC;
 
 type
   TFormMailSend = class(TForm)
@@ -31,7 +31,7 @@ type
     procedure editEmailListKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     function IsValidEmail(const Value: string): Boolean;
-    procedure GetEmailList(param: integer; Query: TIBQuery;
+    procedure GetEmailList(param: integer; Query: TIBCQuery;
       ID: string; List: TsListBox; ListClear: Boolean);
     procedure btnCancelClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -201,13 +201,13 @@ begin
   Result := CheckAllowed(namePart) and CheckAllowed(serverPart);
 end;
 
-procedure TFormMailSend.GetEmailList(param: integer; Query: TIBQuery;
+procedure TFormMailSend.GetEmailList(param: integer; Query: TIBCQuery;
   ID: string; List: TsListBox; ListClear: Boolean);
 var
   i: integer;
   email, tmp: string;
   inList: boolean;
-  Q: TIBQuery;
+  Q: TIBCQuery;
 begin
   if param = 0 then // работаем с Query
   begin
@@ -250,9 +250,8 @@ begin
   begin
     if ListClear then
       List.Clear;
-    Q := TIBQuery.Create(FormMailSend);
-    Q.Database := FormMain.IBDatabase1;
-    Q.Transaction := FormMain.IBTransaction1;
+    Q := TIBCQuery.Create(FormMailSend);
+    Q.Connection := FormMain.IBDatabase1;
     Q.Close;
     Q.SQL.Text := 'select EMAIL from BASE where ID = :ID';
     Q.ParamByName('ID').AsString := ID;

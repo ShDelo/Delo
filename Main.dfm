@@ -4724,26 +4724,6 @@ object FormMain: TFormMain
       C00FC00FF80F0000F01FF01FFFFF800100000000000000000000000000000000
       000000000000}
   end
-  object IBQuery1: TIBQuery
-    BufferChunks = 1000
-    CachedUpdates = False
-    Left = 659
-    Top = 420
-  end
-  object IBDatabase1: TIBDatabase
-    LoginPrompt = False
-    IdleTimer = 0
-    SQLDialect = 3
-    TraceFlags = []
-    Left = 691
-    Top = 420
-  end
-  object IBTransaction1: TIBTransaction
-    Active = False
-    AutoStopAction = saNone
-    Left = 723
-    Top = 420
-  end
   object JvComputerInfoEx1: TJvComputerInfoEx
     Folders.TrailingPathDelimiter = True
     Left = 756
@@ -10224,5 +10204,16 @@ object FormMain: TFormMain
       Caption = #1042#1089#1077#1084' '#1092#1080#1088#1084#1072#1084' '#1074' '#1089#1087#1080#1089#1082#1077
       OnClick = NBtnSendEmailAllClick
     end
+  end
+  object IBQuery1: TIBCQuery
+    Connection = IBDatabase1
+    Left = 660
+    Top = 420
+  end
+  object IBDatabase1: TIBCConnection
+    Port = '3050'
+    LoginPrompt = False
+    Left = 692
+    Top = 420
   end
 end

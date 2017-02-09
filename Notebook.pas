@@ -5,10 +5,10 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, NxColumns, NxColumnClasses, NxScrollControl, NxCustomGridControl,
-  NxCustomGrid, NxGrid, ComCtrls, sTreeView, ExtCtrls, sPanel, IBDatabase,
-  DB, IBCustomDataSet, IBQuery, sSplitter, Buttons, sSpeedButton,
-  sStatusBar, IniFiles, ShellApi, Menus, DBClient, frxClass, frxDBSet,
-  frxRich, frxGradient, StdCtrls, sSkinProvider;
+  NxCustomGrid, NxGrid, ComCtrls, sTreeView, ExtCtrls, sPanel, DB, sSplitter,
+  Buttons, sSpeedButton, sStatusBar, IniFiles, ShellApi, Menus, DBClient,
+  frxClass, frxDBSet, frxRich, frxGradient, StdCtrls, sSkinProvider, IBC,
+  MemDS, DBAccess;
 
 type
   TFormNoteBook = class(TForm)
@@ -35,9 +35,6 @@ type
     NxTextColumn1: TNxTextColumn;
     NxTextColumn2: TNxTextColumn;
     NxTextColumn4: TNxTextColumn;
-    QueryNotebook: TIBQuery;
-    IBDatabase1: TIBDatabase;
-    IBTransaction1: TIBTransaction;
     nBtnNote_Data: TMenuItem;
     nBtnSendEmail: TMenuItem;
     BtnSendEmailAll: TsSpeedButton;
@@ -48,6 +45,8 @@ type
     frxDBDataset: TfrxDBDataset;
     btnDevider1: TsSpeedButton;
     nPrintAll: TMenuItem;
+    QueryNotebook: TIBCQuery;
+    IBDatabase1: TIBCConnection;
     procedure AddRubr(component: TsTreeView);
     procedure RenameRubr(component: TsTreeView);
     procedure DeleteRubr(component: TsTreeView);
@@ -109,13 +108,11 @@ end;
 procedure TFormNoteBook.FormCreate(Sender: TObject);
 begin
   IniLoad;
-  IBDatabase1.DatabaseName := AppData + NotebookDB;
+  IBDatabase1.Database := AppData + NotebookDB;
   IBDatabase1.Params.Clear;
   IBDatabase1.Params.Add('user_name=' + FBUserName);
   IBDatabase1.Params.Add('password=' + FBUserPassword);
-  QueryNotebook.Database := IBDatabase1;
-  QueryNotebook.Transaction := IBTransaction1;
-  IBTransaction1.DefaultDatabase := IBDatabase1;
+  QueryNotebook.Connection := IBDatabase1;
   IBDatabase1.Connected := True;
   RebuildTree(TVRubr);
   SGNotebook.OnAfterSort := FormMain.SGAfterSort;
@@ -167,7 +164,7 @@ begin
   QueryNotebook.Close;
   QueryNotebook.SQL.Text := 'select * from NOTE_RUBR';
   QueryNotebook.Open;
-  QueryNotebook.FetchAll;
+  QueryNotebook.FetchAll := True;
   component.Items.BeginUpdate;
   for i := 1 to QueryNotebook.RecordCount do
   begin
@@ -187,21 +184,20 @@ end;
 procedure TFormNoteBook.TVRubrChange(Sender: TObject; Node: TTreeNode);
 var
   i, n: integer;
-  Query: TIBQuery;
+  Query: tIBCQuery;
 begin
   if TTreeView(Sender).Selected <> nil then
   begin
     SGNotebook.BeginUpdate;
     SGNotebook.ClearRows;
-    Query := TIBQuery.Create(FormNoteBook);
-    Query.Database := FormMain.IBDatabase1;
-    Query.Transaction := FormMain.IBTransaction1;
+    Query := tIBCQuery.Create(FormNoteBook);
+    Query.Connection := FormMain.IBDatabase1;
     QueryNotebook.Close;
     QueryNotebook.SQL.Text := 'select * from NOTE_BASE where ID_RUBRIKA = :ID_RUBRIKA';
     // ID выбраной рубрики, выводим все фирмы для этой рубрики.
     QueryNotebook.ParamByName('ID_RUBRIKA').AsInteger := Integer(TTreeView(Sender).Selected.Data);
     QueryNotebook.Open;
-    QueryNotebook.FetchAll;
+    QueryNotebook.FetchAll := True;
     if QueryNotebook.RecordCount > 0 then
     begin
       n := 0;
@@ -258,23 +254,17 @@ begin
   if Trim(name) <> '' then
   begin
     QueryNotebook.Close;
-    QueryNotebook.SQL.Text := 'insert into NOTE_RUBR (NAME) values (:NAME)';
+    QueryNotebook.SQL.Text := 'insert into NOTE_RUBR (NAME) values (:NAME) returning ID';
     QueryNotebook.ParamByName('NAME').AsString := name;
     try
-      QueryNotebook.ExecSQL;
+      QueryNotebook.Execute;
     except
       begin
         showmessage('ERROR! Operation terminated.');
         exit;
       end;
     end;
-    IBTransaction1.CommitRetaining;
-    QueryNotebook.Close;
-    QueryNotebook.SQL.Text := 'select MAX(ID) from NOTE_RUBR';
-    QueryNotebook.Open;
-    ID := QueryNotebook.Fields[0].Value;
-    // нада добавлять ИД нода в ДАТУ нода, для это получаем МАХ ИД из БД
-    // после создания записи
+    ID := QueryNotebook.ParamByName('RET_ID').AsInteger;
     tmp := component.Items.AddChildObject(nil, name, Pointer(ID));
     tmp.ImageIndex := 21;
     tmp.SelectedIndex := 22;
@@ -302,14 +292,13 @@ begin
     QueryNotebook.ParamByName('NAME').AsString := new;
     QueryNotebook.ParamByName('ID').AsInteger := Integer(component.Selected.Data);
     try
-      QueryNotebook.ExecSQL;
+      QueryNotebook.Execute;
     except
       begin
         showmessage('ERROR! Operation terminated.');
         exit;
       end;
     end;
-    IBTransaction1.CommitRetaining;
     component.Selected.Text := new;
     component.CustomSort(@CustomSortProc, 0, True);
   end;
@@ -334,26 +323,24 @@ begin
     QueryNotebook.SQL.Text := 'delete from NOTE_BASE where ID_RUBRIKA = :ID_RUBRIKA';
     QueryNotebook.ParamByName('ID_RUBRIKA').AsString := IntToStr(Integer(component.Selected.Data));
     try
-      QueryNotebook.ExecSQL;
+      QueryNotebook.Execute;
     except
       begin
         showmessage('ERROR! Operation terminated.');
         exit;
       end;
     end;
-    IBTransaction1.CommitRetaining;
     QueryNotebook.Close;
     QueryNotebook.SQL.Text := 'delete from NOTE_RUBR where ID = :ID';
     QueryNotebook.ParamByName('ID').AsString := IntToStr(Integer(component.Selected.Data));
     try
-      QueryNotebook.ExecSQL;
+      QueryNotebook.Execute;
     except
       begin
         showmessage('ERROR! Operation terminated.');
         exit;
       end;
     end;
-    IBTransaction1.CommitRetaining;
     component.Selected.Delete;
   end;
 end;
@@ -378,14 +365,13 @@ begin
     QueryNotebook.ParamByName('NOTE_DATA').AsString := new;
     QueryNotebook.ParamByName('ID').AsString := SGNotebook.Cells[0, SGNotebook.SelectedRow];
     try
-      QueryNotebook.ExecSQL;
+      QueryNotebook.Execute;
     except
       begin
         showmessage('ERROR! Operation terminated.');
         exit;
       end;
     end;
-    IBTransaction1.CommitRetaining;
     SGNotebook.Cells[3, SGNotebook.SelectedRow] := new;
   end;
 end;
@@ -436,14 +422,13 @@ begin
     QueryNotebook.SQL.Text := 'delete from NOTE_BASE where ID = :ID';
     QueryNotebook.ParamByName('ID').AsString := SGNotebook.Cells[0, SGNotebook.SelectedRow];
     try
-      QueryNotebook.ExecSQL;
+      QueryNotebook.Execute;
     except
       begin
         showmessage('ERROR! Operation terminated.');
         exit;
       end;
     end;
-    IBTransaction1.CommitRetaining;
     SGNotebook.DeleteRow(SGNotebook.SelectedRow);
     FormMain.SGAfterSort(SGNotebook, 0); // перекрашиваем таблицу
   end;
@@ -534,7 +519,7 @@ var
   i, n: integer;
   ID: string;
   CDS: TClientDataSet;
-  Q: TIBQuery;
+  Q: tIBCQuery;
   List1, List2: TStrings;
   FullAdresString, FullNaprString, FullWebString, FullEMailString, FullString: string;
   PhonesAll, PhonesCurrent, AdresAll, AdresCurrent, NaprAll, NaprCurrent: string;
@@ -549,9 +534,8 @@ begin
   CDS.CreateDataSet;
   frxDBDataset.DataSet := CDS;
   frxReport.LoadFromFile(AppPath + 'report.dat');
-  Q := TIBQuery.Create(FormNoteBook);
-  Q.Database := FormMain.IBDatabase1;
-  Q.Transaction := FormMain.IBTransaction1;
+  Q := tIBCQuery.Create(FormNoteBook);
+  Q.Connection := FormMain.IBDatabase1;
   try
     for i := 0 to ID_List.Count - 1 do
     begin

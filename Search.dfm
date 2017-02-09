@@ -36,9 +36,8 @@ object FormSearch: TFormSearch
       Spacing = 0
       OnClick = BtnSearchClick
       SkinData.SkinSection = 'PAGECONTROL'
-      DisabledGlyphKind = []
-      ImageIndex = 0
       Images = FormMain.ImgList_MultiState
+      ImageIndex = 0
     end
     object editSearch: TsEdit
       Left = 4
@@ -56,16 +55,15 @@ object FormSearch: TFormSearch
       OnKeyPress = editSearchKeyPress
       SkinData.SkinSection = 'ALPHAEDIT'
       BoundLabel.Active = True
-      BoundLabel.Caption = #1050#1083#1102#1095#1077#1074#1099#1077' '#1089#1083#1086#1074#1072':'
-      BoundLabel.Indent = 3
       BoundLabel.Font.Charset = DEFAULT_CHARSET
       BoundLabel.Font.Color = clBlack
       BoundLabel.Font.Height = -11
       BoundLabel.Font.Name = 'MS Sans Serif'
       BoundLabel.Font.Style = []
+      BoundLabel.ParentFont = False
+      BoundLabel.Indent = 3
+      BoundLabel.Caption = #1050#1083#1102#1095#1077#1074#1099#1077' '#1089#1083#1086#1074#1072':'
       BoundLabel.Layout = sclTopLeft
-      BoundLabel.MaxWidth = 0
-      BoundLabel.UseSkinColor = True
     end
     object editSearchIn: TsComboBox
       Left = 4
@@ -74,17 +72,17 @@ object FormSearch: TFormSearch
       Height = 21
       Alignment = taLeftJustify
       BoundLabel.Active = True
-      BoundLabel.Caption = #1048#1089#1082#1072#1090#1100' '#1074':'
-      BoundLabel.Indent = 2
       BoundLabel.Font.Charset = DEFAULT_CHARSET
       BoundLabel.Font.Color = clBlack
       BoundLabel.Font.Height = -11
       BoundLabel.Font.Name = 'MS Sans Serif'
       BoundLabel.Font.Style = []
+      BoundLabel.ParentFont = False
+      BoundLabel.Indent = 2
+      BoundLabel.Caption = #1048#1089#1082#1072#1090#1100' '#1074':'
       BoundLabel.Layout = sclTopLeft
-      BoundLabel.MaxWidth = 0
-      BoundLabel.UseSkinColor = True
       SkinData.SkinSection = 'ALPHAEDIT'
+      VerticalAlignment = taAlignTop
       Style = csDropDownList
       Color = clWhite
       Font.Charset = DEFAULT_CHARSET

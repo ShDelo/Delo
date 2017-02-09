@@ -7,13 +7,13 @@ uses
   Dialogs, sSkinManager, jpeg, ExtCtrls, sPanel, ComCtrls, sToolBar,
   StdCtrls, sComboBox, sCheckBox, sPageControl, Grids, JvBehaviorLabel,
   sButton, Buttons, sSpeedButton, Mask, sMaskEdit, sCustomComboEdit,
-  sComboEdit, sFileCtrl, ImgList, Registry, IBDatabase, DB,
-  IBCustomDataSet, IBQuery, IniFiles, DateUtils, sEdit, JvComponentBase,
-  JvExStdCtrls, JvComputerInfoEx, Menus, sBitBtn, NxColumns,
+  sComboEdit, sFileCtrl, ImgList, Registry, IniFiles, DateUtils, sEdit,
+  JvComponentBase, JvExStdCtrls, JvComputerInfoEx, Menus, sBitBtn, NxColumns,
   NxColumnClasses, NxScrollControl, NxCustomGridControl, NxCustomGrid,
   NxGrid, sGauge, sStatusBar, ShellApi, StrUtils, sTreeView, CommCtrl,
   frxClass, frxDBSet, sSkinProvider, acAlphaImageList, sGroupBox, ToolWin,
-  acCoolBar, psAPI, NxEdit, sRichEdit, MidasLib, acPNG;
+  acCoolBar, psAPI, NxEdit, sRichEdit, MidasLib, acPNG, DBAccess, IBC,
+  MemDS, DB;
 
 type
   TFormMain = class(TForm)
@@ -21,9 +21,6 @@ type
     sPanel4: TsPanel;
     ImageReklama: TImage;
     ImageList1: TImageList;
-    IBQuery1: TIBQuery;
-    IBDatabase1: TIBDatabase;
-    IBTransaction1: TIBTransaction;
     JvComputerInfoEx1: TJvComputerInfoEx;
     PopupMenu1: TPopupMenu;
     NBtnFirmOpenInfo: TMenuItem;
@@ -80,6 +77,8 @@ type
     NNBtnSendEmailAll: TMenuItem;
     sPanel6: TsPanel;
     ImageLogo: TImage;
+    IBQuery1: TIBCQuery;
+    IBDatabase1: TIBCConnection;
     function CurrentProcessMemory: Cardinal;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -214,41 +213,37 @@ end;
 
 function TFormMain.CreateNBDT(FileName: string): Boolean;
 var
-  DataBase: TIBDatabase;
-  Query: TIBQuery;
-  Transaction: TIBTransaction;
+  DataBase: TIBCConnection;
+  Query: TIBCQuery;
 
   procedure ExecSQL(s: string);
   begin
     Query.Close;
     Query.SQL.Clear;
     Query.SQL.Text := s;
-    Query.ExecSQL;
+    Query.Execute;
   end;
 
 begin
   Result := True;
-  DataBase := TIBDatabase.Create(self);
+  DataBase := TIBCConnection.Create(self);
   DataBase.LoginPrompt := False;
-  Transaction := TIBTransaction.Create(self);
-  Transaction.DefaultDatabase := DataBase;
-  Query := TIBQuery.Create(self);
-  Query.Database := DataBase;
-  Query.Transaction := Transaction;
+  Query := TIBCQuery.Create(self);
+  Query.Connection := DataBase;
   try
     try
       with DataBase do
       begin
         Params.Clear;
-        Params.Add('USER ''SYSDBA'' PASSWORD ''masterkey''');
-        Params.Add('PAGE_SIZE = 16384');
+        Params.Add('USER ''SYSDBA''');
+        Params.Add('PASSWORD ''masterkey''');
+        Params.Add('PAGE_SIZE 4096');
         Params.Add('DEFAULT CHARACTER SET CYRL');
-        DataBase.DatabaseName := FileName;
+        Database := FileName;
         SQLDialect := 3;
         CreateDataBase;
       end;
-
-      ExecSQL('CREATE TABLE NOTE_BASE ( ID INTEGER NOT NULL, ID_BASE INTEGER NOT NULL, ID_RUBRIKA INTEGER NOT NULL, NOTE_DATA VARCHAR(1000) );');
+      ExecSQL('CREATE TABLE NOTE_BASE ( ID INTEGER NOT NULL, ID_BASE INTEGER NOT NULL, ID_RUBRIKA INTEGER NOT NULL, NOTE_DATA VARCHAR(1000) )');
       ExecSQL('CREATE TABLE NOTE_RUBR ( ID INTEGER NOT NULL, NAME VARCHAR(255) NOT NULL )');
       ExecSQL('CREATE GENERATOR GEN_NOTE_BASE_ID');
       ExecSQL('SET GENERATOR GEN_NOTE_BASE_ID TO 0');
@@ -262,7 +257,7 @@ begin
       Query.SQL.Add('if (new.id is null) then');
       Query.SQL.Add('new.id = gen_id(gen_note_base_id,1);');
       Query.SQL.Add('end');
-      Query.ExecSQL;
+      Query.Execute;
       Query.Close;
       Query.SQL.Clear;
       Query.SQL.Add('CREATE TRIGGER NOTE_RUBR_BI FOR NOTE_RUBR');
@@ -271,19 +266,14 @@ begin
       Query.SQL.Add('if (new.id is null) then');
       Query.SQL.Add('new.id = gen_id(gen_note_rubr_id,1);');
       Query.SQL.Add('end');
-      Query.ExecSQL;
-      DataBase.Close;
-      Database.Params.Clear;
-      Database.Params.Add('user_name=' + FBUserName);
-      Database.Params.Add('password=' + FBUserPassword);
-      Database.Connected := True;
+      Query.Execute;
       Query.Close;
       Query.SQL.Clear;
       Query.SQL.Text := 'insert into NOTE_RUBR (NAME) values (:NAME)';
       Query.ParamByName('NAME').AsString := 'Общие';
-      Query.ExecSQL;
-      Transaction.CommitRetaining;
-    except DataBase.Close;
+      Query.Execute;
+    except
+      DataBase.Close;
       DeleteFile(FileName);
       Result := False;
     end;
@@ -292,7 +282,6 @@ begin
     DataBase.Close;
     Query.Free;
     DataBase.Free;
-    Transaction.Free;
   end;
 end;
 
@@ -354,13 +343,11 @@ begin
   InitUserSettings;
   IniCreate;
   IniLoad;
-  IBDatabase1.DatabaseName := AppPath + MainDB;
+  IBDatabase1.Database := AppPath + MainDB;
   IBDatabase1.Params.Clear;
   IBDatabase1.Params.Add('user_name=' + FBUserName);
   IBDatabase1.Params.Add('password=' + FBUserPassword);
-  IBQuery1.Database := IBDatabase1;
-  IBQuery1.Transaction := IBTransaction1;
-  IBTransaction1.DefaultDatabase := IBDatabase1;
+  IBQuery1.Connection := IBDatabase1;
   try
     IBDatabase1.Connected := True;
   except on E: Exception do
@@ -497,7 +484,7 @@ var
       ID := IntToStr(Integer(editType.Items.Objects[editType.ItemIndex]));
       Req3 := ' TYPE like ''%#' + ID + '$%'' and';
     end;
-    Req4 := ' ACTIVITY = -1 and';
+    Req4 := ' ACTIVITY = 1 and';
   end;
 
 begin
@@ -510,7 +497,7 @@ begin
   IBQuery1.SQL.Text := ReqMain;
   // showmessage(reqmain); exit;
   IBQuery1.Open;
-  IBQuery1.FetchAll;
+  IBQuery1.FetchAll := True;
   if IBQuery1.RecordCount = 0 then
   begin
     IBQuery1.Close;
@@ -599,7 +586,7 @@ begin
   IBQuery1.Close;
   IBQuery1.SQL.Text := 'select * from RUBRIKATOR order by lower(NAME)';
   IBQuery1.Open;
-  IBQuery1.FetchAll;
+  IBQuery1.FetchAll := True;
   if IBQuery1.RecordCount = 0 then
     exit;
   for i := 1 to IBQuery1.RecordCount do
@@ -621,7 +608,7 @@ begin
   IBQuery1.Close;
   IBQuery1.SQL.Text := 'select * from GOROD order by lower(NAME)';
   IBQuery1.Open;
-  IBQuery1.FetchAll;
+  IBQuery1.FetchAll := True;
   if IBQuery1.RecordCount = 0 then
     exit;
   for i := 1 to IBQuery1.RecordCount do
@@ -643,7 +630,7 @@ begin
   IBQuery1.Close;
   IBQuery1.SQL.Text := 'select * from TYPE order by lower(NAME)';
   IBQuery1.Open;
-  IBQuery1.FetchAll;
+  IBQuery1.FetchAll := True;
   if IBQuery1.RecordCount = 0 then
     exit;
   for i := 1 to IBQuery1.RecordCount do
@@ -661,9 +648,9 @@ var
 begin
   SGNapr.ClearRows;
   IBQuery1.Close;
-  IBQuery1.SQL.Text := 'select * from NAPRAVLENIE where ACTIVITY = -1';
+  IBQuery1.SQL.Text := 'select * from NAPRAVLENIE where ACTIVITY = 1';
   IBQuery1.Open;
-  IBQuery1.FetchAll;
+  IBQuery1.FetchAll := True;
   if IBQuery1.RecordCount = 0 then
     exit;
   SGNapr.BeginUpdate;
@@ -696,7 +683,7 @@ begin
     IBQuery1.SQL.Text := 'select REKLAMA from RUBRIKATOR where ID = :ID';
     IBQuery1.Params[0].AsString := ID;
     IBQuery1.Open;
-    IBQuery1.FetchAll;
+    IBQuery1.FetchAll := True;
     if IBQuery1.RecordCount > 0 then
       if Trim(IBQuery1.FieldByName('REKLAMA').AsString) <> '' then
       begin
@@ -760,7 +747,7 @@ begin
   IBQuery1.SQL.Text := 'select * from BASE where ID = :ID';
   IBQuery1.ParamByName('ID').AsString := ID;
   IBQuery1.Open;
-  IBQuery1.FetchAll;
+  IBQuery1.FetchAll := True;
   if IBQuery1.RecordCount = 0 then
     exit;
   FormFirmInfo.reFirmInfo.Lines.BeginUpdate;
@@ -973,7 +960,7 @@ begin
   IBQuery1.SQL.Text := 'select * from BASE where NAPRAVLENIE like :NAPRAVLENIE';
   IBQuery1.Params[0].AsString := '%#' + ID + '$%';
   IBQuery1.Open;
-  IBQuery1.FetchAll;
+  IBQuery1.FetchAll := True;
   if IBQuery1.RecordCount = 0 then
   begin
     MessageBox(Handle, 'Не удалось найти фирму с данным видом деятельности.', 'Информация', MB_OK or MB_ICONINFORMATION);
@@ -1009,18 +996,17 @@ end;
 
 function TFormMain.GetNameByID(table, id: string): string;
 var
-  Q: TIBQuery;
+  Q: TIBCQuery;
 begin
   result := '';
   if (Trim(table) = '') or (Trim(id) = '') then
     exit;
-  Q := TIBQuery.Create(FormMain);
-  Q.Database := FormMain.IBDatabase1;
-  Q.Transaction := FormMain.IBTransaction1;
+  Q := TIBCQuery.Create(FormMain);
+  Q.Connection := FormMain.IBDatabase1;
   Q.Close;
   Q.Sql.Text := 'select * from ' + table + ' where id = ' + id;
   Q.Open;
-  Q.FetchAll;
+  Q.FetchAll := True;
   if Q.RecordCount > 0 then
     result := Q.FieldValues['NAME'];
   Q.Close;

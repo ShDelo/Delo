@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls, sStatusBar, StdCtrls, sEdit, Buttons, sSpeedButton,
   ExtCtrls, sPanel, NxColumns, NxColumnClasses, NxScrollControl,
-  NxCustomGridControl, NxCustomGrid, NxGrid, sComboBox, IBQuery;
+  NxCustomGridControl, NxCustomGrid, NxGrid, sComboBox, IBC;
 
 type
   TFormSearch = class(TForm)
@@ -70,22 +70,20 @@ end;
 procedure TFormSearch.BtnSearchClick(Sender: TObject);
 var
   SearchString, Request: string;
-  QuerySearch: TIBQuery;
+  QuerySearch: TIBCQuery;
   i: integer;
 
   procedure SubSearching(Query, Param: string);
   var
     x: integer;
   begin
-    QuerySearch := TIBQuery.Create(FormSearch);
-    QuerySearch.Database := FormMain.IBDatabase1;
-    QuerySearch.Transaction := FormMain.IBTransaction1;
+    QuerySearch := TIBCQuery.Create(FormSearch);
+    QuerySearch.Connection := FormMain.IBDatabase1;
     QuerySearch.Close;
     QuerySearch.SQL.Text := Query;
     QuerySearch.Params[0].AsString := Param;
-    ;
     QuerySearch.Open;
-    QuerySearch.FetchAll;
+    QuerySearch.FetchAll := True;
     SGSearch.BeginUpdate;
     for x := 1 to QuerySearch.RecordCount do
     begin
@@ -111,18 +109,17 @@ begin
       Request := '';
       if editSearchIn.ItemIndex = 0 then
       begin {Название фирмы}
-        SubSearching('select * from BASE where (lower(NAME) like :NAME) and (ACTIVITY = -1)', '%' + SearchString + '%');
+        SubSearching('select * from BASE where (lower(NAME) like :NAME) and (ACTIVITY = 1)', '%' + SearchString + '%');
       end
       else if editSearchIn.ItemIndex = 1 then
       begin {Город}
-        QuerySearch := TIBQuery.Create(FormSearch);
-        QuerySearch.Database := FormMain.IBDatabase1;
-        QuerySearch.Transaction := FormMain.IBTransaction1;
+        QuerySearch := TIBCQuery.Create(FormSearch);
+        QuerySearch.Connection := FormMain.IBDatabase1;
         QuerySearch.Close;
         QuerySearch.SQL.Text := 'select * from GOROD where lower(NAME) like :NAME';
         QuerySearch.ParamByName('NAME').AsString := '%' + SearchString + '%';
         QuerySearch.Open;
-        QuerySearch.FetchAll;
+        QuerySearch.FetchAll := True;
         if QuerySearch.RecordCount = 0 then
         begin
           QuerySearch.Close;
@@ -137,12 +134,12 @@ begin
           QuerySearch.Next;
         end;
         delete(Request, Length(Request) - 2, 3);
-        Request := 'select * from BASE where (' + Request + ') and (ACTIVITY = -1)';
+        Request := 'select * from BASE where (' + Request + ') and (ACTIVITY = 1)';
         QuerySearch.Close;
         //  showmessage(Request);
         QuerySearch.SQL.Text := Request;
         QuerySearch.Open;
-        QuerySearch.FetchAll;
+        QuerySearch.FetchAll := True;
         SGSearch.BeginUpdate;
         for i := 1 to QuerySearch.RecordCount do
         begin
@@ -159,34 +156,33 @@ begin
       end
       else if editSearchIn.ItemIndex = 2 then
       begin {Телефон}
-        SubSearching('select * from BASE where (lower(PHONES) like :PHONES) and (ACTIVITY = -1)', '%' + SearchString + '%');
+        SubSearching('select * from BASE where (lower(PHONES) like :PHONES) and (ACTIVITY = 1)', '%' + SearchString + '%');
       end
       else if editSearchIn.ItemIndex = 3 then
       begin {Адрес}
-        SubSearching('select * from BASE where (lower(ADRES) like :ADRES) and (ACTIVITY = -1)', '%' + SearchString + '%');
+        SubSearching('select * from BASE where (lower(ADRES) like :ADRES) and (ACTIVITY = 1)', '%' + SearchString + '%');
       end
       else if editSearchIn.ItemIndex = 4 then
       begin {Руководитель}
-        SubSearching('select * from BASE where (lower(FIO) like :FIO) and (ACTIVITY = -1)', '%' + SearchString + '%');
+        SubSearching('select * from BASE where (lower(FIO) like :FIO) and (ACTIVITY = 1)', '%' + SearchString + '%');
       end
       else if editSearchIn.ItemIndex = 5 then
       begin {Эл. страница}
-        SubSearching('select * from BASE where (lower(WEB) like :WEB) and (ACTIVITY = -1)', '%' + SearchString + '%');
+        SubSearching('select * from BASE where (lower(WEB) like :WEB) and (ACTIVITY = 1)', '%' + SearchString + '%');
       end
       else if editSearchIn.ItemIndex = 6 then
       begin {Эл. почта}
-        SubSearching('select * from BASE where (lower(EMAIL) like :EMAIL) and (ACTIVITY = -1)', '%' + SearchString + '%');
+        SubSearching('select * from BASE where (lower(EMAIL) like :EMAIL) and (ACTIVITY = 1)', '%' + SearchString + '%');
       end
       else if editSearchIn.ItemIndex = 7 then
       begin {Деятельность}
-        QuerySearch := TIBQuery.Create(FormSearch);
-        QuerySearch.Database := FormMain.IBDatabase1;
-        QuerySearch.Transaction := FormMain.IBTransaction1;
+        QuerySearch := TIBCQuery.Create(FormSearch);
+        QuerySearch.Connection := FormMain.IBDatabase1;
         QuerySearch.Close;
         QuerySearch.SQL.Text := 'select * from NAPRAVLENIE where lower(NAME) like :NAME';
         QuerySearch.ParamByName('NAME').AsString := '%' + SearchString + '%';
         QuerySearch.Open;
-        QuerySearch.FetchAll;
+        QuerySearch.FetchAll := True;
         if QuerySearch.RecordCount = 0 then
         begin
           QuerySearch.Close;
@@ -201,12 +197,12 @@ begin
           QuerySearch.Next;
         end;
         delete(Request, Length(Request) - 2, 3);
-        Request := 'select * from BASE where (' + Request + ') and (ACTIVITY = -1)';
+        Request := 'select * from BASE where (' + Request + ') and (ACTIVITY = 1)';
         QuerySearch.Close;
         QuerySearch.SQL.Text := Request;
         //  showmessage(Request); exit;
         QuerySearch.Open;
-        QuerySearch.FetchAll;
+        QuerySearch.FetchAll := True;
         SGSearch.BeginUpdate;
         for i := 1 to QuerySearch.RecordCount do
         begin

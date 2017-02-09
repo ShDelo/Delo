@@ -38,7 +38,7 @@ var
 
 implementation
 
-uses Main, Notebook;
+uses Main, Notebook, DBAccess;
 
 {$R *.dfm}
 
@@ -78,7 +78,7 @@ begin
     Close;
     SQL.Text := 'select * from NOTE_RUBR order by lower(NAME)';
     Open;
-    FetchAll;
+    FetchAll := True;
     if RecordCount = 0 then
       exit;
     editRubr.Clear;
@@ -123,21 +123,17 @@ begin
     begin
       Rubr_name := Trim(Rubr_name);
       Close;
-      SQL.Text := 'insert into NOTE_RUBR (NAME) values (:NAME)';
+      SQL.Text := 'insert into NOTE_RUBR (NAME) values (:NAME) returning ID';
       ParamByName('NAME').AsString := Rubr_name;
       try
-        ExecSQL;
+        Execute;
       except
         begin
           showmessage('ERROR! Operation terminated.');
           exit;
         end;
       end;
-      FormNoteBook.IBTransaction1.CommitRetaining;
-      Close;
-      SQL.Text := 'select MAX(ID) from NOTE_RUBR';
-      Open;
-      ID := Fields[0].Value;
+      ID := ParamByName('RET_ID').AsInteger;
       tmp := FormNotebook.TVRubr.Items.AddChildObject(nil, Rubr_name, Pointer(ID));
       tmp.ImageIndex := 21;
       tmp.SelectedIndex := 22;
@@ -167,14 +163,13 @@ begin
     ParamByName('ID_RUBRIKA').AsString := RUBR_ID;
     ParamByName('NOTE_DATA').AsString := Trim(editNotes.Text);
     try
-      ExecSQL;
+      Execute;
     except
       begin
         showmessage('ERROR! Operation terminated.');
         exit;
       end;
     end;
-    FormNoteBook.IBTransaction1.CommitRetaining;
     Close;
     FormNotebookAdd.Close;
   end;
