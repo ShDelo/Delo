@@ -194,7 +194,6 @@ object FormNotebookAdd: TFormNotebookAdd
       Font.Height = -11
       Font.Name = 'MS Sans Serif'
       Font.Style = []
-      ItemHeight = 15
       ItemIndex = -1
       ParentFont = False
       TabOrder = 0

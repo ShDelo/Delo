@@ -90,7 +90,6 @@ object FormSearch: TFormSearch
       Font.Height = -11
       Font.Name = 'MS Sans Serif'
       Font.Style = []
-      ItemHeight = 15
       ItemIndex = -1
       ParentFont = False
       TabOrder = 1
@@ -109,10 +108,13 @@ object FormSearch: TFormSearch
     Top = 0
     Width = 491
     Height = 436
+    Touch.InteractiveGestures = [igPan, igPressAndTap]
+    Touch.InteractiveGestureOptions = [igoPanSingleFingerHorizontal, igoPanSingleFingerVertical, igoPanInertia, igoPanGutter, igoParentPassthrough]
     Align = alClient
     AppearanceOptions = [aoBoldTextSelection, aoHideFocus, aoHighlightSlideCells]
     AutoScroll = True
     BorderStyle = bsNone
+    Caption = ''
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
@@ -130,6 +132,11 @@ object FormSearch: TFormSearch
       DefaultValue = '0'
       Header.Caption = 'ID'
       Header.DisplayMode = dmTextAndImage
+      Header.Font.Charset = DEFAULT_CHARSET
+      Header.Font.Color = clWindowText
+      Header.Font.Height = -11
+      Header.Font.Name = 'Tahoma'
+      Header.Font.Style = []
       Options = [coCanClick, coCanInput, coCanSort, coPublicUsing]
       Position = 0
       SortType = stAlphabetic
@@ -174,6 +181,11 @@ object FormSearch: TFormSearch
         508000000000000000003040B0C080A0FFFF2058FFFF203070D0B0585050E070
         70FFC06050FF9048405000000000000000000000000000000000000000000000
         000000000000000000006068C0B03040B0C03040B0C06068B0FF}
+      Header.Font.Charset = DEFAULT_CHARSET
+      Header.Font.Color = clWindowText
+      Header.Font.Height = -11
+      Header.Font.Name = 'Tahoma'
+      Header.Font.Style = []
       Position = 1
       Sorted = True
       SortType = stAlphabetic

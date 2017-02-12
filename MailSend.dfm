@@ -221,7 +221,7 @@ object FormMailSend: TFormMailSend
       Visible = False
       SkinData.SkinSection = 'GAUGE'
       ForeColor = clBlack
-      MaxValue = 100
+      Progress = 0
       Suffix = '%'
     end
     object btnEmailAdd: TsSpeedButton
@@ -450,7 +450,6 @@ object FormMailSend: TFormMailSend
       Font.Height = -11
       Font.Name = 'MS Sans Serif'
       Font.Style = []
-      ItemHeight = 16
       MultiSelect = True
       ParentFont = False
       TabOrder = 1

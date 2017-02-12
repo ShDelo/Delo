@@ -60,8 +60,7 @@ type
     procedure BtnRenameRubrClick(Sender: TObject);
     procedure BtnDeleteRubrClick(Sender: TObject);
     procedure NBtnNBDeleteFirmClick(Sender: TObject);
-    procedure TVRubrContextPopup(Sender: TObject; MousePos: TPoint;
-      var Handled: Boolean);
+    procedure TVRubrContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
     procedure nBtnNote_DataClick(Sender: TObject);
     procedure NBtnNBPrintFirmClick(Sender: TObject);
     procedure nBtnSendEmailClick(Sender: TObject);
@@ -99,8 +98,7 @@ begin
   Params.ExStyle := Params.ExStyle or WS_Ex_AppWindow;
 end;
 
-function CustomSortProc(Node1, Node2: TTreeNode;
-  iUpToThisLevel: Integer): Integer; stdcall;
+function CustomSortProc(Node1, Node2: TTreeNode; iUpToThisLevel: Integer): Integer; stdcall;
 begin
   Result := AnsiStrIComp(PChar(Node1.Text), PChar(Node2.Text));
 end;
@@ -129,8 +127,10 @@ begin
   SGNotebook.Columns[2].Width := Ini.ReadInteger('params', 'nb_sg1_col2', 0);
   SGNotebook.Columns[3].Width := Ini.ReadInteger('params', 'nb_sg1_col3', 0);
   case Ini.ReadInteger('params', 'nb_wndstate', 0) of
-    0: FormNoteBook.WindowState := wsNormal;
-    1: FormNoteBook.WindowState := wsMaximized;
+    0:
+      FormNoteBook.WindowState := wsNormal;
+    1:
+      FormNoteBook.WindowState := wsMaximized;
   end;
   Ini.Free;
 end;
@@ -147,7 +147,8 @@ begin
         Ini.WriteInteger('params', 'nb_wndwidth', FormNoteBook.Width);
         Ini.WriteInteger('params', 'nb_wndheight', FormNoteBook.Height);
       end;
-    wsMaximized: Ini.WriteInteger('params', 'nb_wndstate', 1);
+    wsMaximized:
+      Ini.WriteInteger('params', 'nb_wndstate', 1);
   end;
   Ini.WriteInteger('params', 'nb_panel1_width', panelTree.Width);
   Ini.WriteInteger('params', 'nb_sg1_col2', SGNotebook.Columns[2].Width);
@@ -168,8 +169,7 @@ begin
   component.Items.BeginUpdate;
   for i := 1 to QueryNotebook.RecordCount do
   begin
-    Node := component.Items.AddChildObject(nil,
-      QueryNotebook.FieldByName('Name').AsString,
+    Node := component.Items.AddChildObject(nil, QueryNotebook.FieldByName('Name').AsString,
       Pointer(QueryNotebook.FieldByName('ID').AsInteger));
     Node.ImageIndex := 21;
     Node.SelectedIndex := 22;
@@ -315,8 +315,7 @@ begin
   if component.Selected = nil then
     exit;
   msg := 'Рубрика "' + component.Selected.Text + '" сейчас будет удалена. Вы уверены?';
-  if MessageBox(handle, PAnsiChar(msg), 'Подтверждение',
-    MB_YESNO or MB_ICONQUESTION) = ID_YES then
+  if MessageBox(handle, PChar(msg), 'Подтверждение', MB_YESNO or MB_ICONQUESTION) = ID_YES then
   begin
     QueryNotebook.Close;
     QueryNotebook.SQL.Text := 'delete from NOTE_BASE where ID_RUBRIKA = :ID_RUBRIKA';
@@ -415,7 +414,7 @@ begin
   if SGNotebook.SelectedCount = 0 then
     exit;
   msg := 'Фирма "' + SGNotebook.Cells[2, SGNotebook.SelectedRow] + '" сейчас будет удалена. Вы уверены?';
-  if MessageBox(handle, PAnsiChar(msg), 'Подтверждение', MB_YESNO or MB_ICONQUESTION) = ID_YES then
+  if MessageBox(handle, PChar(msg), 'Подтверждение', MB_YESNO or MB_ICONQUESTION) = ID_YES then
   begin
     QueryNotebook.Close;
     QueryNotebook.SQL.Text := 'delete from NOTE_BASE where ID = :ID';
@@ -433,8 +432,7 @@ begin
   end;
 end;
 
-procedure TFormNoteBook.TVRubrContextPopup(Sender: TObject;
-  MousePos: TPoint; var Handled: Boolean);
+procedure TFormNoteBook.TVRubrContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
 var
   treeNode: TTreenode;
 begin
@@ -602,7 +600,7 @@ begin
             if Trim(city_str) <> '' then
               city_str := FormMain.GetNameByID('GOROD', city_str) + ', ';
             adres := ofType + zip_str + country_str + city_str + list2[4];
-            {officetype - zip, country, city, street}
+            { officetype - zip, country, city, street }
             if Trim(adres) <> '' then
               FullAdresString := FullAdresString + #13 + adres;
             if Trim(PhonesCurrent) <> '' then

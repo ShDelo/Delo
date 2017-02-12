@@ -28,11 +28,9 @@ type
     procedure btnEmailDeleteClick(Sender: TObject);
     procedure btnEmailClearClick(Sender: TObject);
     procedure editToKeyPress(Sender: TObject; var Key: Char);
-    procedure editEmailListKeyUp(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
+    procedure editEmailListKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     function IsValidEmail(const Value: string): Boolean;
-    procedure GetEmailList(param: integer; Query: TIBCQuery;
-      ID: string; List: TsListBox; ListClear: Boolean);
+    procedure GetEmailList(param: integer; Query: TIBCQuery; ID: string; List: TsListBox; ListClear: Boolean);
     procedure btnCancelClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
@@ -51,7 +49,6 @@ implementation
 uses Main;
 
 {$R *.dfm}
-
 { TFormMailSend }
 
 procedure TFormMailSend.CreateParams(var Params: TCreateParams);
@@ -60,8 +57,7 @@ begin
   Params.ExStyle := Params.ExStyle or WS_Ex_AppWindow;
 end;
 
-procedure TFormMailSend.FormClose(Sender: TObject;
-  var Action: TCloseAction);
+procedure TFormMailSend.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   EMailScan_Break := True;
 end;
@@ -78,8 +74,8 @@ procedure TFormMailSend.btnSendClick(Sender: TObject);
     i: integer;
   begin
     MAPISendMail := TMAPISendMail.Create;
-    {  if MAPISendMail.Prerequisites.IsMapiAvailable then showmessage('MapiAvailable');
-      if MAPISendMail.Prerequisites.IsClientAvailable then showmessage('ClientAvailable');}
+    { if MAPISendMail.Prerequisites.IsMapiAvailable then showmessage('MapiAvailable');
+      if MAPISendMail.Prerequisites.IsClientAvailable then showmessage('ClientAvailable'); }
     try
       for i := 0 to editEmailList.Count - 1 do
         MAPISendMail.AddRecipient(editEmailList.Items[i]);
@@ -88,6 +84,7 @@ procedure TFormMailSend.btnSendClick(Sender: TObject);
       MAPISendMail.Free;
     end;
   end;
+
 begin
   if editEmailList.Items.Count = 0 then
   begin
@@ -146,8 +143,7 @@ procedure TFormMailSend.btnEmailClearClick(Sender: TObject);
 begin
   if editEmailList.Items.Count = 0 then
     exit;
-  if MessageBox(handle, 'Очистить список адресов?', 'Подтверждение',
-    MB_YESNO or MB_ICONQUESTION) = MRYES then
+  if MessageBox(handle, 'Очистить список адресов?', 'Подтверждение', MB_YESNO or MB_ICONQUESTION) = MRYES then
     editEmailList.Clear;
 end;
 
@@ -160,8 +156,7 @@ begin
   end;
 end;
 
-procedure TFormMailSend.editEmailListKeyUp(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+procedure TFormMailSend.editEmailListKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   if Key = 46 then
   begin
@@ -178,11 +173,12 @@ function TFormMailSend.IsValidEmail(const Value: string): Boolean;
     Result := false;
     for i := 1 to Length(s) do
     begin
-      if not (s[i] in ['a'..'z', 'A'..'Z', '0'..'9', '_', '-', '.', '&']) then
+      if not(s[i] in ['a' .. 'z', 'A' .. 'Z', '0' .. '9', '_', '-', '.', '&']) then
         exit;
     end;
     Result := true;
   end;
+
 var
   i: integer;
   namePart, serverPart: string;
@@ -201,8 +197,7 @@ begin
   Result := CheckAllowed(namePart) and CheckAllowed(serverPart);
 end;
 
-procedure TFormMailSend.GetEmailList(param: integer; Query: TIBCQuery;
-  ID: string; List: TsListBox; ListClear: Boolean);
+procedure TFormMailSend.GetEmailList(param: integer; Query: TIBCQuery; ID: string; List: TsListBox; ListClear: Boolean);
 var
   i: integer;
   email, tmp: string;
@@ -245,7 +240,7 @@ begin
     end;
     if FormMain.IBDatabase1.Connected then
       FormMain.IBDatabase1.Close;
-  end; {if param = 0 then}
+  end; { if param = 0 then }
   if param = 1 then // работаем с ID
   begin
     if ListClear then
@@ -281,7 +276,7 @@ begin
     end;
     Q.Close;
     Q.Free;
-  end; {if param = 1 then}
+  end; { if param = 1 then }
 end;
 
 end.

@@ -4,8 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls, StdCtrls, sGauge, sLabel, ComCtrls, acProgressBar,
-  frxpngimage;
+  Dialogs, ExtCtrls, StdCtrls, sGauge, sLabel, ComCtrls, acProgressBar, acPNG;
 
 type
   TFormLogo = class(TForm)

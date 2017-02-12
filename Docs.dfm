@@ -22,9 +22,12 @@ object FormDocs: TFormDocs
     Top = 0
     Width = 480
     Height = 453
+    Touch.InteractiveGestures = [igPan, igPressAndTap]
+    Touch.InteractiveGestureOptions = [igoPanSingleFingerHorizontal, igoPanSingleFingerVertical, igoPanInertia, igoPanGutter, igoParentPassthrough]
     Align = alTop
     AppearanceOptions = [aoHideFocus, aoHighlightSlideCells]
     AutoScroll = True
+    Caption = ''
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -13
@@ -47,6 +50,11 @@ object FormDocs: TFormDocs
       Font.Style = []
       Header.Caption = 'ID'
       Header.DisplayMode = dmTextAndImage
+      Header.Font.Charset = DEFAULT_CHARSET
+      Header.Font.Color = clWindowText
+      Header.Font.Height = -11
+      Header.Font.Name = 'Tahoma'
+      Header.Font.Style = []
       Options = [coCanClick, coCanInput, coCanSort, coPublicUsing]
       ParentFont = False
       Position = 0
@@ -97,6 +105,11 @@ object FormDocs: TFormDocs
         508000000000000000003040B0C080A0FFFF2058FFFF203070D0B0585050E070
         70FFC06050FF9048405000000000000000000000000000000000000000000000
         000000000000000000006068C0B03040B0C03040B0C06068B0FF}
+      Header.Font.Charset = DEFAULT_CHARSET
+      Header.Font.Color = clWindowText
+      Header.Font.Height = -11
+      Header.Font.Name = 'Tahoma'
+      Header.Font.Style = []
       ParentFont = False
       Position = 1
       Sorted = True
@@ -105,6 +118,11 @@ object FormDocs: TFormDocs
     end
     object NxTextColumn3: TNxTextColumn
       Header.Caption = 'FileName'
+      Header.Font.Charset = DEFAULT_CHARSET
+      Header.Font.Color = clWindowText
+      Header.Font.Height = -11
+      Header.Font.Name = 'Tahoma'
+      Header.Font.Style = []
       Position = 2
       SortType = stAlphabetic
       Visible = False

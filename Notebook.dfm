@@ -1,10 +1,10 @@
 object FormNoteBook: TFormNoteBook
   Left = 359
   Top = 210
-  Width = 800
-  Height = 480
   BorderIcons = [biSystemMenu, biMaximize]
   Caption = #1047#1072#1087#1080#1089#1085#1072#1103' '#1082#1085#1080#1075#1072
+  ClientHeight = 442
+  ClientWidth = 784
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -164,9 +164,12 @@ object FormNoteBook: TFormNoteBook
       Top = 1
       Width = 543
       Height = 422
+      Touch.InteractiveGestures = [igPan, igPressAndTap]
+      Touch.InteractiveGestureOptions = [igoPanSingleFingerHorizontal, igoPanSingleFingerVertical, igoPanInertia, igoPanGutter, igoParentPassthrough]
       Align = alClient
       AppearanceOptions = [aoHideFocus, aoHighlightSlideCells]
       AutoScroll = True
+      Caption = ''
       GridLinesStyle = lsHorizontalOnly
       HeaderSize = 26
       Options = [goDisableColumnMoving, goGrid, goHeader, goSelectFullRow]
@@ -176,19 +179,46 @@ object FormNoteBook: TFormNoteBook
       TabStop = True
       OnDblClick = SGNotebookDblClick
       object NxTextColumn1: TNxTextColumn
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'MS Sans Serif'
+        Font.Style = []
         Header.Caption = 'NB.ID'
+        Header.Font.Charset = DEFAULT_CHARSET
+        Header.Font.Color = clWindowText
+        Header.Font.Height = -11
+        Header.Font.Name = 'Tahoma'
+        Header.Font.Style = []
+        ParentFont = False
         Position = 0
         SortType = stAlphabetic
         Visible = False
       end
       object NxTextColumn2: TNxTextColumn
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'MS Sans Serif'
+        Font.Style = []
         Header.Caption = 'BASE.ID'
+        Header.Font.Charset = DEFAULT_CHARSET
+        Header.Font.Color = clWindowText
+        Header.Font.Height = -11
+        Header.Font.Name = 'Tahoma'
+        Header.Font.Style = []
+        ParentFont = False
         Position = 1
         SortType = stAlphabetic
         Visible = False
       end
       object NxTextColumn3: TNxTextColumn
         DefaultWidth = 300
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'MS Sans Serif'
+        Font.Style = []
         Header.Caption = #1053#1072#1079#1074#1072#1085#1080#1077' '#1092#1080#1088#1084#1099
         Header.DisplayMode = dmTextAndImage
         Header.Glyph.Data = {
@@ -226,6 +256,12 @@ object FormNoteBook: TFormNoteBook
           508000000000000000003040B0C080A0FFFF2058FFFF203070D0B0585050E070
           70FFC06050FF9048405000000000000000000000000000000000000000000000
           000000000000000000006068C0B03040B0C03040B0C06068B0FF}
+        Header.Font.Charset = DEFAULT_CHARSET
+        Header.Font.Color = clWindowText
+        Header.Font.Height = -11
+        Header.Font.Name = 'Tahoma'
+        Header.Font.Style = []
+        ParentFont = False
         Position = 2
         Sorted = True
         SortType = stAlphabetic
@@ -233,6 +269,11 @@ object FormNoteBook: TFormNoteBook
       end
       object NxTextColumn4: TNxTextColumn
         DefaultWidth = 230
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'MS Sans Serif'
+        Font.Style = []
         Header.Caption = #1055#1088#1080#1084#1077#1095#1072#1085#1080#1077
         Header.DisplayMode = dmTextAndImage
         Header.Glyph.Data = {
@@ -270,6 +311,12 @@ object FormNoteBook: TFormNoteBook
           0000000000007088C0307088E0FF6078D0FF5068D0FF4068D020000000000000
           0000000000000000000000000000000000000000000000000000000000000000
           0000000000000000000000000000000000000000000000000000}
+        Header.Font.Charset = DEFAULT_CHARSET
+        Header.Font.Color = clWindowText
+        Header.Font.Height = -11
+        Header.Font.Name = 'Tahoma'
+        Header.Font.Style = []
+        ParentFont = False
         Position = 3
         SortType = stAlphabetic
         Width = 230
@@ -365,7 +412,7 @@ object FormNoteBook: TFormNoteBook
     end
   end
   object frxReport: TfrxReport
-    Version = '4.9.32'
+    Version = '4.13.2'
     DotMatrixReport = False
     IniFile = '\Software\Fast Reports'
     PreviewOptions.Buttons = [pbPrint, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbNavigator, pbNoFullScreen]

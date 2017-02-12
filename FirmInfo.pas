@@ -20,8 +20,7 @@ type
     BtnDocs: TsBitBtn;
     btnSendEmail: TsBitBtn;
     procedure BtnCloseClick(Sender: TObject);
-    procedure reFirmInfoKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
+    procedure reFirmInfoKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure MyRichEditWndProc(var msg: TMessage);
     procedure FormCreate(Sender: TObject);
     procedure BtnPrintClick(Sender: TObject);
@@ -56,8 +55,7 @@ end;
 procedure TFormFirmInfo.MyRichEditWndProc(var msg: TMessage);
 begin
   OldRichEditWndProc(msg);
-  if (msg.Msg = WM_PAINT) or (msg.Msg = WM_SETFOCUS) or
-    (msg.Msg = WM_NCHITTEST) then
+  if (msg.Msg = WM_PAINT) or (msg.Msg = WM_SETFOCUS) or (msg.Msg = WM_NCHITTEST) then
     HideCaret(reFirmInfo.Handle);
 end;
 
@@ -66,11 +64,11 @@ var
   p: TENLink;
   strURL: string;
 begin
-  if (Message.Msg = WM_NOTIFY) then
+  if (message.Msg = WM_NOTIFY) then
   begin
-    if (PNMHDR(Message.lParam).code = EN_LINK) then
+    if (PNMHDR(message.lParam).code = EN_LINK) then
     begin
-      p := TENLink(Pointer(TWMNotify(Message).NMHdr)^);
+      p := TENLink(Pointer(TWMNotify(message).NMHdr)^);
       if (p.Msg = WM_LBUTTONDOWN) then
       begin
         SendMessage(reFirmInfo.Handle, EM_EXSETSEL, 0, Longint(@(p.chrg)));
@@ -80,7 +78,7 @@ begin
       end;
     end;
   end;
-  inherited WndProc(Message);
+  inherited WndProc(message);
 end;
 
 procedure TFormFirmInfo.FormCreate(Sender: TObject);
@@ -95,8 +93,7 @@ begin
   SendMessage(reFirmInfo.Handle, EM_AUTOURLDETECT, Integer(True), 0);
 end;
 
-procedure TFormFirmInfo.reFirmInfoKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+procedure TFormFirmInfo.reFirmInfoKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   Key := 0;
 end;

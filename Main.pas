@@ -104,8 +104,7 @@ type
     procedure editSearchChange(Sender: TObject);
     procedure BtnSearchClick(Sender: TObject);
     procedure SGNaprDblClick(Sender: TObject);
-    procedure sPageControl1PageChanging(Sender: TObject;
-      NewPage: TsTabSheet; var AllowChange: Boolean);
+    procedure sPageControl1PageChanging(Sender: TObject; NewPage: TsTabSheet; var AllowChange: Boolean);
     procedure TimerReklamaPicTimer(Sender: TObject);
     procedure BtnImagePrevClick(Sender: TObject);
     procedure BtnImageNextClick(Sender: TObject);
@@ -120,8 +119,7 @@ type
     procedure BtnNotebookClick(Sender: TObject);
     procedure NBtnNBAddRecClick(Sender: TObject);
     procedure btnDocsClick(Sender: TObject);
-    procedure sSkinProvider1TitleButtons0MouseUp(Sender: TObject;
-      Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure sSkinProvider1TitleButtons0MouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure NBtnSendEmailCurrentClick(Sender: TObject);
     procedure NBtnSendEmailAllClick(Sender: TObject);
     procedure editGorodChange(Sender: TObject);
@@ -158,9 +156,9 @@ implementation
 uses Logo, FirmInfo, Search, Notebook, NotebookAdd, MailSend, Docs, Math;
 
 {$R *.dfm}
-{#BACKUP [changes].txt}
-{#BACKUP report.dat}
-{#BACKUP MapiEmail.pas}
+{ #BACKUP [changes].txt }
+{ #BACKUP report.dat }
+{ #BACKUP MapiEmail.pas }
 
 function QueryCreate: TIBCQuery;
 var
@@ -203,8 +201,7 @@ begin
   sStatusBar1.Panels[0].Text := FloatToStr(e) + 'kb';
 end;
 
-function TFormMain.SearchNode(component: TsTreeView;
-  id: integer): TTreeNode;
+function TFormMain.SearchNode(component: TsTreeView; id: integer): TTreeNode;
 var
   Searching: boolean;
   Noddy: TTreeNode;
@@ -301,7 +298,7 @@ end;
 procedure TFormMain.InitUserSettings;
 var
   C: HCURSOR;
-  user_NBFile: PAnsiChar;
+  user_NBFile: PChar;
 begin
   C := LoadCursor(0, IDC_HAND);
   if C <> 0 then
@@ -320,26 +317,26 @@ begin
       Halt;
     end;
   end;
-  user_NBFile := PAnsiChar(AppData + NotebookDB);
+  user_NBFile := PChar(AppData + NotebookDB);
   if not FileExists(user_NBFile) then
   begin
     if not CreateNBDT(user_NBFile) then
     begin
       FormLogo.Close;
-      MessageBox(handle, 'Ошибка при создании рабочих файлов записной книги.' + #13 + 'Завершение работы.', 'Ошибка', MB_OK or
-        MB_ICONERROR);
+      MessageBox(handle, 'Ошибка при создании рабочих файлов записной книги.' + #13 + 'Завершение работы.', 'Ошибка',
+        MB_OK or MB_ICONERROR);
       FormMain.Free;
       Halt;
     end;
   end
   else
   begin
-    //  if GetFileAttributes(user_NBFile) > 32 then {не уверен какие значения вернет на разных windows}
+    // if GetFileAttributes(user_NBFile) > 32 then {не уверен какие значения вернет на разных windows}
     if not SetFileAttributes(user_NBFile, FILE_ATTRIBUTE_NORMAL) then
     begin
       FormLogo.Close;
-      MessageBox(handle, 'Ошибка при настройке рабочих файлов записной книги.' + #13 + 'Завершение работы.', 'Ошибка', MB_OK or
-        MB_ICONERROR);
+      MessageBox(handle, 'Ошибка при настройке рабочих файлов записной книги.' + #13 + 'Завершение работы.', 'Ошибка',
+        MB_OK or MB_ICONERROR);
       FormMain.Free;
       Halt;
     end;
@@ -363,7 +360,8 @@ begin
   IBQuery1.Connection := IBDatabase1;
   try
     IBDatabase1.Connected := True;
-  except on E: Exception do
+  except
+    on E: Exception do
     begin
       FormLogo.Close;
       MessageBox(handle, PChar('Ошибка при подключении файлов баз данных.' + #13 + E.Message), 'Ошибка', MB_OK or MB_ICONERROR);
@@ -408,19 +406,19 @@ begin
   if not FileExists(AppData + IniFile) then
   begin
     Ini := TIniFile.Create(AppData + IniFile);
-    {---------------------MAIN---------------------}
+    { ---------------------MAIN--------------------- }
     Ini.WriteInteger('params', 'wndstate', 0);
     Ini.WriteInteger('params', 'wndwidth', 922);
     Ini.WriteInteger('params', 'wndheight', 701);
     FormMain.Position := poDesktopCenter;
-    {-------------------NOTEBOOK-------------------}
+    { -------------------NOTEBOOK------------------- }
     Ini.WriteInteger('params', 'nb_wndstate', 0);
     Ini.WriteInteger('params', 'nb_wndwidth', 800);
     Ini.WriteInteger('params', 'nb_wndheight', 480);
     Ini.WriteInteger('params', 'nb_panel1_width', 180);
     Ini.WriteInteger('params', 'nb_sg1_col2', 376);
     Ini.WriteInteger('params', 'nb_sg1_col3', 230);
-    {-----------------NOTEBOOK ADD-----------------}
+    { -----------------NOTEBOOK ADD----------------- }
     Ini.WriteInteger('params', 'nbadd_cb1', 1);
     Ini.Free;
   end;
@@ -434,8 +432,10 @@ begin
   FormMain.Width := Ini.ReadInteger('params', 'wndwidth', 0);
   FormMain.Height := Ini.ReadInteger('params', 'wndheight', 0);
   case Ini.ReadInteger('params', 'wndstate', 0) of
-    0: FormMain.WindowState := wsNormal;
-    1: FormMain.WindowState := wsMaximized;
+    0:
+      FormMain.WindowState := wsNormal;
+    1:
+      FormMain.WindowState := wsMaximized;
   end;
   Ini.Free;
 end;
@@ -452,7 +452,8 @@ begin
         Ini.WriteInteger('params', 'wndwidth', FormMain.Width);
         Ini.WriteInteger('params', 'wndheight', FormMain.Height);
       end;
-    wsMaximized: Ini.WriteInteger('params', 'wndstate', 1);
+    wsMaximized:
+      Ini.WriteInteger('params', 'wndstate', 1);
   end;
   Ini.Free;
 end;
@@ -526,7 +527,7 @@ begin
     SGFirm.Cells[0, SGFirm.LastAddedRow] := IBQuery1.FieldValues['ID'];
     SGFirm.Cells[1, SGFirm.LastAddedRow] := IBQuery1.FieldValues['NAME'];
 
-    {#bannerright=1<[>тексика.jpg<]>$#bannermain=1<[>тексика.jpg<]>$#text=1<[>бегущая строка<]>$#site=1<[>www.google.com<]>$}
+    { #bannerright=1<[>тексика.jpg<]>$#bannermain=1<[>тексика.jpg<]>$#text=1<[>бегущая строка<]>$#site=1<[>www.google.com<]>$ }
     if not isReklamaListAssigned then
     begin
       ReklamaStr := '';
@@ -739,11 +740,10 @@ var
   List1, List2: TStrings;
   i: integer;
 
-  procedure AddColoredLine(AText: string; AColor: TColor; AFontSize: integer;
-    AFontName: TFontName; AFontStyle: TFontStyles);
+  procedure AddColoredLine(AText: string; AColor: TColor; AFontSize: integer; AFontName: TFontName; AFontStyle: TFontStyles);
   begin
-    {  RE_TextLength := RE_TextLength + Length(AText) + 2;
-      RE.SelStart := RE_TextLength - Length(AText) - 2;}
+    { RE_TextLength := RE_TextLength + Length(AText) + 2;
+      RE.SelStart := RE_TextLength - Length(AText) - 2; }
     FormFirmInfo.reFirmInfo.SelStart := Length(FormFirmInfo.reFirmInfo.Text);
     FormFirmInfo.reFirmInfo.SelAttributes.Color := AColor;
     FormFirmInfo.reFirmInfo.SelAttributes.Size := AFontSize;
@@ -825,7 +825,7 @@ begin
       if Trim(city_str) <> '' then
         city_str := GetNameByID('GOROD', city_str) + ', ';
       adres := ofType + zip_str + country_str + city_str + list2[4];
-      {officetype - zip, country, city, street}
+      { officetype - zip, country, city, street }
       if Trim(adres) <> '' then
         AddColoredLine(adres, clBlack, 10, 'Tahoma', []);
       if Trim(PhonesCurrent) <> '' then
@@ -943,7 +943,7 @@ begin
       if FileExists(AppPic + BannerMain) then
         CreateRekalamForm(BannerMain);
     if Trim(Site) <> '' then
-      ShellExecute(Handle, 'open', PAnsiChar(Site), nil, nil, SW_Normal);
+      ShellExecute(Handle, 'open', PChar(Site), nil, nil, SW_Normal);
   end;
 end;
 
@@ -1039,7 +1039,7 @@ begin
       if RowVisible[i] then
         inc(n, 1);
       if Odd(n) then
-        C := $00F0F0F0 {clBtnFace}
+        C := $00F0F0F0 { clBtnFace }
       else
         C := clWindow;
       for z := 0 to Columns.Count - 1 do
@@ -1051,8 +1051,7 @@ end;
 
 procedure TFormMain.BtnResetDataClick(Sender: TObject);
 begin
-  if (editRubrikator.ItemIndex = 0) and (editGorod.ItemIndex = 0) and
-    (editType.ItemIndex = 0) and (Trim(editSearch.Text) = '') then
+  if (editRubrikator.ItemIndex = 0) and (editGorod.ItemIndex = 0) and (editType.ItemIndex = 0) and (Trim(editSearch.Text) = '') then
     exit;
   editRubrikator.ItemIndex := 0;
   editRubrikator.Tag := 0;
@@ -1101,8 +1100,7 @@ begin
   FormSearch.editSearch.SetFocus;
 end;
 
-procedure TFormMain.sPageControl1PageChanging(Sender: TObject;
-  NewPage: TsTabSheet; var AllowChange: Boolean);
+procedure TFormMain.sPageControl1PageChanging(Sender: TObject; NewPage: TsTabSheet; var AllowChange: Boolean);
 begin
   editSearch.Clear;
 end;
@@ -1140,7 +1138,8 @@ begin
   LastImage := REKLAMA_PIC_ListALL.Count - 1;
   if (ReklamaPic_CurrentNO = 0) and (TimerReklamaPic.Interval = ReklamaPic_Interval) then
     ReklamaPic_CurrentNO := LastImage - 1
-  else {// потому что TimerReklamaPicTimer показал LastImage и сделал Inc(Pic) на 0}if ReklamaPic_CurrentNO = 0 then
+  else { // потому что TimerReklamaPicTimer показал LastImage и сделал Inc(Pic) на 0 }
+    if ReklamaPic_CurrentNO = 0 then
       ReklamaPic_CurrentNO := LastImage
     else
       Dec(ReklamaPic_CurrentNO);
@@ -1199,7 +1198,7 @@ procedure TFormMain.CreateRekalamForm(Pic: string);
 var
   FormReklama: TForm;
   PanelReklama: TsPanel;
-  PicReklama: TImage; {916(w) x 695(h)}
+  PicReklama: TImage; { 916(w) x 695(h) }
 begin
   FormReklama := Application.FindComponent('FormReklama') as TForm;
   if Assigned(FormReklama) then
@@ -1256,9 +1255,9 @@ var
   Text, FirmID: string;
 begin
   // Увеличивает канвас ImageReklama_String
- { ImageReklama_TEXT.Picture.Bitmap.Width := ImageReklama_TEXT.Width;
-  ImageReklama_TEXT.Picture.Bitmap.Height := ImageReklama_TEXT.Height;
-  ImageReklama_TEXT.Canvas.FillRect(ImageReklama_TEXT.ClientRect);}
+  { ImageReklama_TEXT.Picture.Bitmap.Width := ImageReklama_TEXT.Width;
+    ImageReklama_TEXT.Picture.Bitmap.Height := ImageReklama_TEXT.Height;
+    ImageReklama_TEXT.Canvas.FillRect(ImageReklama_TEXT.ClientRect); }
   Text := copy(ReklamaText_CurentText, 0, pos('#ID$', ReklamaText_CurentText) - 1);
   FirmID := copy(ReklamaText_CurentText, pos('#ID$', ReklamaText_CurentText) + 4, Length(ReklamaText_CurentText));
   DEC(tX, 1);
@@ -1421,8 +1420,7 @@ begin
   end;
 end;
 
-procedure TFormMain.sSkinProvider1TitleButtons0MouseUp(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TFormMain.sSkinProvider1TitleButtons0MouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   if Button = mbLeft then
     showmessage('Справка ...');

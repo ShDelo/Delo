@@ -48,8 +48,7 @@ begin
   Params.ExStyle := Params.ExStyle or WS_Ex_AppWindow;
 end;
 
-function CustomSortProc(Node1, Node2: TTreeNode;
-  iUpToThisLevel: Integer): Integer; stdcall;
+function CustomSortProc(Node1, Node2: TTreeNode; iUpToThisLevel: Integer): Integer; stdcall;
 begin
   Result := AnsiStrIComp(PChar(Node1.Text), PChar(Node2.Text));
 end;

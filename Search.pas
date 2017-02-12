@@ -107,11 +107,11 @@ begin
         exit;
       Request := '';
       if editSearchIn.ItemIndex = 0 then
-      begin {Название фирмы}
+      begin { Название фирмы }
         SubSearching('select * from BASE where (lower(NAME) like :NAME) and (ACTIVITY = 1)', '%' + SearchString + '%');
       end
       else if editSearchIn.ItemIndex = 1 then
-      begin {Город}
+      begin { Город }
         QuerySearch := QueryCreate;
         QuerySearch.Close;
         QuerySearch.SQL.Text := 'select * from GOROD where lower(NAME) like :NAME';
@@ -134,7 +134,7 @@ begin
         delete(Request, Length(Request) - 2, 3);
         Request := 'select * from BASE where (' + Request + ') and (ACTIVITY = 1)';
         QuerySearch.Close;
-        //  showmessage(Request);
+        // showmessage(Request);
         QuerySearch.SQL.Text := Request;
         QuerySearch.Open;
         QuerySearch.FetchAll := True;
@@ -153,27 +153,27 @@ begin
         FormMain.IBDatabase1.Close;
       end
       else if editSearchIn.ItemIndex = 2 then
-      begin {Телефон}
+      begin { Телефон }
         SubSearching('select * from BASE where (lower(PHONES) like :PHONES) and (ACTIVITY = 1)', '%' + SearchString + '%');
       end
       else if editSearchIn.ItemIndex = 3 then
-      begin {Адрес}
+      begin { Адрес }
         SubSearching('select * from BASE where (lower(ADRES) like :ADRES) and (ACTIVITY = 1)', '%' + SearchString + '%');
       end
       else if editSearchIn.ItemIndex = 4 then
-      begin {Руководитель}
+      begin { Руководитель }
         SubSearching('select * from BASE where (lower(FIO) like :FIO) and (ACTIVITY = 1)', '%' + SearchString + '%');
       end
       else if editSearchIn.ItemIndex = 5 then
-      begin {Эл. страница}
+      begin { Эл. страница }
         SubSearching('select * from BASE where (lower(WEB) like :WEB) and (ACTIVITY = 1)', '%' + SearchString + '%');
       end
       else if editSearchIn.ItemIndex = 6 then
-      begin {Эл. почта}
+      begin { Эл. почта }
         SubSearching('select * from BASE where (lower(EMAIL) like :EMAIL) and (ACTIVITY = 1)', '%' + SearchString + '%');
       end
       else if editSearchIn.ItemIndex = 7 then
-      begin {Деятельность}
+      begin { Деятельность }
         QuerySearch := QueryCreate;
         QuerySearch.Close;
         QuerySearch.SQL.Text := 'select * from NAPRAVLENIE where lower(NAME) like :NAME';
@@ -197,7 +197,7 @@ begin
         Request := 'select * from BASE where (' + Request + ') and (ACTIVITY = 1)';
         QuerySearch.Close;
         QuerySearch.SQL.Text := Request;
-        //  showmessage(Request); exit;
+        // showmessage(Request); exit;
         QuerySearch.Open;
         QuerySearch.FetchAll := True;
         SGSearch.BeginUpdate;
@@ -214,10 +214,12 @@ begin
         QuerySearch.Free;
         FormMain.IBDatabase1.Close;
       end;
-    except on E: Exception do
+    except
+      on E: Exception do
         MessageBox(Handle, PChar('Произошла ошибка при поиске:' + #13 + E.Message), 'Ошибка', MB_OK or MB_ICONERROR);
     end
-  finally SGSearch.Resort;
+  finally
+    SGSearch.Resort;
     FormMain.IBDatabase1.Close;
   end;
 end;
