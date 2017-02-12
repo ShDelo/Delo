@@ -620,7 +620,7 @@ begin
   editGorod.Items.Add('Все города');
   editGorod.ItemIndex := 0;
   IBQuery1.Close;
-  IBQuery1.SQL.Text := 'select * from GOROD order by lower(NAME)';
+  IBQuery1.SQL.Text := 'select * from GOROD where ACTIVITY = 1 order by lower(NAME)';
   IBQuery1.Open;
   IBQuery1.FetchAll := True;
   if IBQuery1.RecordCount = 0 then

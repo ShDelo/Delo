@@ -114,7 +114,7 @@ begin
       begin { Город }
         QuerySearch := QueryCreate;
         QuerySearch.Close;
-        QuerySearch.SQL.Text := 'select * from GOROD where lower(NAME) like :NAME';
+        QuerySearch.SQL.Text := 'select * from GOROD where (lower(NAME) like :NAME) and (ACTIVITY = 1)';
         QuerySearch.ParamByName('NAME').AsString := '%' + SearchString + '%';
         QuerySearch.Open;
         QuerySearch.FetchAll := True;
@@ -172,11 +172,11 @@ begin
       begin { Эл. почта }
         SubSearching('select * from BASE where (lower(EMAIL) like :EMAIL) and (ACTIVITY = 1)', '%' + SearchString + '%');
       end
-      else if editSearchIn.ItemIndex = 7 then
+      else if editSearchIn.ItemIndex = 7 then // не используется
       begin { Деятельность }
         QuerySearch := QueryCreate;
         QuerySearch.Close;
-        QuerySearch.SQL.Text := 'select * from NAPRAVLENIE where lower(NAME) like :NAME';
+        QuerySearch.SQL.Text := 'select * from NAPRAVLENIE where (lower(NAME) like :NAME) and (ACTIVITY = 1)';
         QuerySearch.ParamByName('NAME').AsString := '%' + SearchString + '%';
         QuerySearch.Open;
         QuerySearch.FetchAll := True;
