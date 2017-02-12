@@ -3194,6 +3194,8 @@ object FormMain: TFormMain
             TabOrder = 0
             TabStop = True
             OnDblClick = SGFirmDblClick
+            ExplicitLeft = -2
+            ExplicitTop = -2
             object NxTextColumn1: TNxTextColumn
               DefaultValue = '0'
               Font.Charset = DEFAULT_CHARSET
@@ -3274,10 +3276,6 @@ object FormMain: TFormMain
         end
         object sTabSheet2: TsTabSheet
           Caption = #1044#1077#1103#1090#1077#1083#1100#1085#1086#1089#1090#1100
-          ExplicitLeft = 0
-          ExplicitTop = 0
-          ExplicitWidth = 0
-          ExplicitHeight = 0
           object SGNapr: TNextGrid
             Left = 0
             Top = 0
@@ -3393,8 +3391,8 @@ object FormMain: TFormMain
       TabOrder = 1
       SkinData.SkinSection = 'PANEL'
       object BtnSearch: TsSpeedButton
-        Left = 462
-        Top = 52
+        Left = 460
+        Top = 56
         Width = 142
         Height = 40
         Caption = #1056#1072#1089#1096#1080#1088#1077#1085#1085#1099#1081#13#10#1087#1086#1080#1089#1082
@@ -3415,11 +3413,12 @@ object FormMain: TFormMain
         Reflected = True
       end
       object editGorod: TsComboBox
-        Left = 5
-        Top = 70
-        Width = 220
+        Left = 4
+        Top = 68
+        Width = 444
         Height = 22
         Alignment = taLeftJustify
+        AllowMouseWheel = False
         BoundLabel.Active = True
         BoundLabel.Font.Charset = DEFAULT_CHARSET
         BoundLabel.Font.Color = clBlack
@@ -3430,9 +3429,11 @@ object FormMain: TFormMain
         BoundLabel.Indent = 2
         BoundLabel.Caption = #1043#1086#1088#1086#1076':'
         BoundLabel.Layout = sclTopLeft
+        DropDownCount = 30
         SkinData.SkinSection = 'PAGECONTROL'
         VerticalAlignment = taAlignTop
         Style = csDropDownList
+        AutoComplete = False
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
@@ -3445,9 +3446,9 @@ object FormMain: TFormMain
         OnChange = editGorodChange
       end
       object editType: TsComboBox
-        Left = 229
-        Top = 70
-        Width = 220
+        Left = 460
+        Top = 24
+        Width = 142
         Height = 22
         Alignment = taLeftJustify
         BoundLabel.Active = True
@@ -3475,38 +3476,6 @@ object FormMain: TFormMain
         ShowHint = False
         TabOrder = 2
         OnChange = editGorodChange
-      end
-      object sComboBox1: TsComboBox
-        Left = 462
-        Top = 24
-        Width = 142
-        Height = 22
-        Alignment = taLeftJustify
-        BoundLabel.Active = True
-        BoundLabel.Font.Charset = DEFAULT_CHARSET
-        BoundLabel.Font.Color = clBlack
-        BoundLabel.Font.Height = 14
-        BoundLabel.Font.Name = 'Tahoma'
-        BoundLabel.Font.Style = []
-        BoundLabel.ParentFont = False
-        BoundLabel.Indent = 3
-        BoundLabel.Caption = #1044#1086#1087#1086#1083#1085#1080#1090#1077#1083#1100#1085#1086':'
-        BoundLabel.Layout = sclTopLeft
-        SkinData.SkinSection = 'PAGECONTROL'
-        VerticalAlignment = taAlignTop
-        Color = clWhite
-        Enabled = False
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = 14
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ItemIndex = -1
-        ParentFont = False
-        ParentShowHint = False
-        ShowHint = False
-        TabOrder = 3
-        TabStop = False
       end
       object editRubrikator: TsComboBox
         Left = 5
@@ -3687,7 +3656,7 @@ object FormMain: TFormMain
     Left = 683
     Top = 473
     Bitmap = {
-      494C010118001D00080010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118001D00100010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

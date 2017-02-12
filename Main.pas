@@ -59,7 +59,6 @@ type
     sPanel3: TsPanel;
     editGorod: TsComboBox;
     editType: TsComboBox;
-    sComboBox1: TsComboBox;
     editRubrikator: TsComboBox;
     panelToolBar: TsPanel;
     BtnResetData: TsSpeedButton;
