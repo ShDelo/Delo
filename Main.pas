@@ -13,7 +13,7 @@ uses
   NxGrid, sGauge, sStatusBar, ShellApi, StrUtils, sTreeView, CommCtrl,
   frxClass, frxDBSet, sSkinProvider, acAlphaImageList, sGroupBox, ToolWin,
   acCoolBar, psAPI, NxEdit, sRichEdit, MidasLib, acPNG, DBAccess, IBC,
-  MemDS, DB;
+  MemDS, DB, sComboBoxes;
 
 function QueryCreate: TIBCQuery;
 
@@ -57,9 +57,9 @@ type
     NxTextColumn4: TNxTextColumn;
     NxTextColumn5: TNxTextColumn;
     sPanel3: TsPanel;
-    editGorod: TsComboBox;
-    editType: TsComboBox;
     editRubrikator: TsComboBox;
+    editGorod: TsComboBoxEx;
+    editType: TsComboBox;
     panelToolBar: TsPanel;
     BtnResetData: TsSpeedButton;
     BtnPrint: TsSpeedButton;
@@ -121,9 +121,11 @@ type
     procedure sSkinProvider1TitleButtons0MouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure NBtnSendEmailCurrentClick(Sender: TObject);
     procedure NBtnSendEmailAllClick(Sender: TObject);
-    procedure editGorodChange(Sender: TObject);
+    procedure editGorodSelect(Sender: TObject);
+    procedure editGorodKeyPress(Sender: TObject; var Key: Char);
     procedure ImageLogoClick(Sender: TObject);
     procedure BtnFirmOpenInfoClick(Sender: TObject);
+    procedure editTypeSelect(Sender: TObject);
   private
     { Private declarations }
   public
@@ -717,7 +719,39 @@ begin
   editRubrikator.Tag := editRubrikator.ItemIndex;
 end;
 
-procedure TFormMain.editGorodChange(Sender: TObject);
+procedure TFormMain.editGorodKeyPress(Sender: TObject; var Key: Char);
+begin
+  if Key = #13 then
+  begin
+
+    if Trim(editGorod.Text) = EmptyStr then
+    begin
+      editGorod.ItemIndex := 0;
+      editGorodSelect(editGorod);
+      exit;
+    end;
+
+    if editGorod.Items.IndexOf(editGorod.Text) = -1 then
+      editGorod.ItemIndex := editGorod.Tag
+    else
+      editGorodSelect(editGorod);
+  end;
+end;
+
+procedure TFormMain.editGorodSelect(Sender: TObject);
+begin
+  if (Sender as TsComboBoxEx).Tag <> (Sender as TsComboBoxEx).ItemIndex then
+  begin
+    if sPageControl1.ActivePageIndex = 0 then
+      SGFirm.SetFocus;
+    if sPageControl1.ActivePageIndex = 1 then
+      SGNapr.SetFocus;
+    GetData;
+  end;
+  (Sender as TsComboBoxEx).Tag := (Sender as TsComboBoxEx).ItemIndex;
+end;
+
+procedure TFormMain.editTypeSelect(Sender: TObject);
 begin
   if (Sender as TsComboBox).Tag <> (Sender as TsComboBox).ItemIndex then
   begin

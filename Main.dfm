@@ -25,7 +25,7 @@ object FormMain: TFormMain
     Height = 602
     Align = alRight
     BevelOuter = bvNone
-    TabOrder = 0
+    TabOrder = 1
     SkinData.SkinSection = 'PANEL'
     object ImageReklama: TImage
       Left = 0
@@ -3049,7 +3049,7 @@ object FormMain: TFormMain
     Height = 602
     Align = alClient
     BevelOuter = bvNone
-    TabOrder = 2
+    TabOrder = 0
     SkinData.SkinSection = 'PANEL'
     object sPanel2: TsPanel
       Left = 0
@@ -3194,8 +3194,6 @@ object FormMain: TFormMain
             TabOrder = 0
             TabStop = True
             OnDblClick = SGFirmDblClick
-            ExplicitLeft = -2
-            ExplicitTop = -2
             object NxTextColumn1: TNxTextColumn
               DefaultValue = '0'
               Font.Charset = DEFAULT_CHARSET
@@ -3412,10 +3410,10 @@ object FormMain: TFormMain
         ImageIndex = 0
         Reflected = True
       end
-      object editGorod: TsComboBox
-        Left = 4
-        Top = 68
-        Width = 444
+      object editType: TsComboBox
+        Left = 460
+        Top = 24
+        Width = 142
         Height = 22
         Alignment = taLeftJustify
         AllowMouseWheel = False
@@ -3426,39 +3424,7 @@ object FormMain: TFormMain
         BoundLabel.Font.Name = 'Tahoma'
         BoundLabel.Font.Style = []
         BoundLabel.ParentFont = False
-        BoundLabel.Indent = 2
-        BoundLabel.Caption = #1043#1086#1088#1086#1076':'
-        BoundLabel.Layout = sclTopLeft
-        DropDownCount = 30
-        SkinData.SkinSection = 'PAGECONTROL'
-        VerticalAlignment = taAlignTop
-        Style = csDropDownList
-        AutoComplete = False
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = 14
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ItemIndex = -1
-        ParentFont = False
-        TabOrder = 1
-        OnChange = editGorodChange
-      end
-      object editType: TsComboBox
-        Left = 460
-        Top = 24
-        Width = 142
-        Height = 22
-        Alignment = taLeftJustify
-        BoundLabel.Active = True
-        BoundLabel.Font.Charset = DEFAULT_CHARSET
-        BoundLabel.Font.Color = clBlack
-        BoundLabel.Font.Height = 14
-        BoundLabel.Font.Name = 'Tahoma'
-        BoundLabel.Font.Style = []
-        BoundLabel.ParentFont = False
-        BoundLabel.Indent = 2
+        BoundLabel.Indent = 3
         BoundLabel.Caption = #1058#1080#1087' '#1087#1088#1077#1076#1087#1088#1080#1103#1090#1080#1103':'
         BoundLabel.Layout = sclTopLeft
         SkinData.SkinSection = 'PAGECONTROL'
@@ -3475,14 +3441,15 @@ object FormMain: TFormMain
         ParentShowHint = False
         ShowHint = False
         TabOrder = 2
-        OnChange = editGorodChange
+        OnSelect = editTypeSelect
       end
       object editRubrikator: TsComboBox
-        Left = 5
+        Left = 10
         Top = 24
         Width = 444
         Height = 22
         Alignment = taLeftJustify
+        AllowMouseWheel = False
         BoundLabel.Active = True
         BoundLabel.Font.Charset = DEFAULT_CHARSET
         BoundLabel.Font.Color = clBlack
@@ -3507,6 +3474,37 @@ object FormMain: TFormMain
         ParentFont = False
         TabOrder = 0
         OnChange = editRubrikatorChange
+      end
+      object editGorod: TsComboBoxEx
+        Left = 10
+        Top = 68
+        Width = 444
+        Height = 23
+        AllowMouseWheel = False
+        BoundLabel.Active = True
+        BoundLabel.Font.Charset = DEFAULT_CHARSET
+        BoundLabel.Font.Color = clWindowText
+        BoundLabel.Font.Height = 14
+        BoundLabel.Font.Name = 'Tahoma'
+        BoundLabel.Font.Style = []
+        BoundLabel.ParentFont = False
+        BoundLabel.Indent = 3
+        BoundLabel.Caption = #1043#1086#1088#1086#1076':'
+        BoundLabel.Layout = sclTopLeft
+        AutoCompleteOptions = [acoAutoSuggest, acoAutoAppend]
+        ItemsEx = <>
+        Color = clWhite
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = 14
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ItemIndex = -1
+        ParentFont = False
+        TabOrder = 1
+        OnKeyPress = editGorodKeyPress
+        OnSelect = editGorodSelect
+        DropDownCount = 30
       end
     end
   end
@@ -3656,7 +3654,7 @@ object FormMain: TFormMain
     Left = 683
     Top = 473
     Bitmap = {
-      494C010118001D00100010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118001D00140010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
