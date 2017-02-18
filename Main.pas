@@ -1240,6 +1240,7 @@ begin
   FormReklama.Name := 'FormReklama';
   FormReklama.OnClose := FormLogo.FormClose;
   FormReklama.Caption := '';
+  FormReklama.Position := poDesigned;
   FormReklama.Left := FormMain.Left;
   FormReklama.Top := FormMain.Top;
   FormReklama.Width := FormMain.Width;
