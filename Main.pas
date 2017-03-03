@@ -39,8 +39,6 @@ type
     TimerMemory: TTimer;
     sSkinManager1: TsSkinManager;
     sSkinProvider1: TsSkinProvider;
-    ImageList16: TsAlphaImageList;
-    ImageList24: TsAlphaImageList;
     ImgList_MultiState: TsAlphaImageList;
     ImgList_Multi16: TsAlphaImageList;
     sPanel1: TsPanel;
@@ -58,8 +56,11 @@ type
     NxTextColumn5: TNxTextColumn;
     sPanel3: TsPanel;
     editRubrikator: TsComboBox;
-    editGorod: TsComboBoxEx;
-    editType: TsComboBox;
+    editCity: TsComboBoxEx;
+    editFirmType: TsComboBox;
+    editRegion: TsComboBoxEx;
+    btnRegionReset: TsSpeedButton;
+    btnCityReset: TsSpeedButton;
     panelToolBar: TsPanel;
     BtnResetData: TsSpeedButton;
     BtnPrint: TsSpeedButton;
@@ -91,8 +92,9 @@ type
     procedure IniSave;
     procedure GetData;
     procedure GetRubrikList;
-    procedure GetGorodList;
-    procedure GetOfficeTypeList;
+    procedure GetRegionList;
+    procedure GetCityList(ID_Region: integer = -1);
+    procedure GetFirmTypeList;
     procedure GetNaprList;
     procedure OpenFirmByID(ID: string; ShowForm: Boolean);
     function ParseAdresFieldToEntriesList(Field_ADRES_LineByIndex: string): TStringList;
@@ -122,16 +124,23 @@ type
     procedure sSkinProvider1TitleButtons0MouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure NBtnSendEmailCurrentClick(Sender: TObject);
     procedure NBtnSendEmailAllClick(Sender: TObject);
-    procedure editGorodSelect(Sender: TObject);
-    procedure editGorodKeyPress(Sender: TObject; var Key: Char);
+    procedure editRegionOrCitySelect(Sender: TObject);
+    procedure editRegionOrCityKeyPress(Sender: TObject; var Key: Char);
     procedure ImageLogoClick(Sender: TObject);
     procedure BtnFirmOpenInfoClick(Sender: TObject);
-    procedure editTypeSelect(Sender: TObject);
+    procedure editFirmTypeSelect(Sender: TObject);
+    procedure editRegionOrCityChange(Sender: TObject);
+    procedure btnRegionOrCityResetClick(Sender: TObject);
   private
     { Private declarations }
   public
     procedure WMGetMinMaxInfo(var M: TWMGetMinMaxInfo); message WM_GetMinMaxInfo;
     { Public declarations }
+  end;
+
+type
+  TsComboBoxEx_Helper = class helper for TsComboBoxEx
+    procedure Reset;
   end;
 
 const
@@ -141,6 +150,10 @@ const
   NotebookDB: string = 'nbdt.msq';
   IniFile: string = 'delo.ini';
   ReklamaPic_Interval: DWord = 4000;
+  STR_DEFAULT_RUBRIKA = 'Все рубрики';
+  STR_DEFAULT_REGION = 'Все области';
+  STR_DEFAULT_CITY = 'Все города';
+  STR_DEFAULT_FIRMTYPE = 'Все фирмы';
 
 var
   FormMain: TFormMain;
@@ -161,6 +174,13 @@ uses Logo, FirmInfo, Search, Notebook, NotebookAdd, MailSend, Docs, Math;
 { #BACKUP [changes].txt }
 { #BACKUP report.dat }
 { #BACKUP MapiEmail.pas }
+
+procedure TsComboBoxEx_Helper.Reset;
+begin
+  self.ItemIndex := -1;
+  self.ItemIndex := 0;
+  self.Tag := 0;
+end;
 
 function QueryCreate: TIBCQuery;
 var
@@ -373,8 +393,9 @@ begin
   end;
   FormLogo.Loading('Подключение баз данных...');
   GetRubrikList;
-  GetGorodList;
-  GetOfficeTypeList;
+  GetRegionList;
+  GetCityList;
+  GetFirmTypeList;
   GetNaprList;
   FormLogo.Loading('Загрузка информации...');
   GetData;
@@ -463,7 +484,7 @@ end;
 procedure TFormMain.GetData;
 var
   i: integer;
-  Req1, Req2, Req3, Req4, ReqMain: string;
+  Req1, Req2, Req3, Req4, Req5, ReqMain: string;
   ReklamaStr, tmp, ID: string;
 
   procedure ReklamaListRandomize(List: TStringList);
@@ -489,18 +510,24 @@ var
       Req1 := ' RUBR like ''%#' + ID + '$%'' and';
     end;
     Req2 := '';
-    if editGorod.ItemIndex > 0 then
+    if editRegion.ItemIndex > 0 then
     begin
-      ID := IntToStr(Integer(editGorod.Items.Objects[editGorod.ItemIndex]));
-      Req2 := ' ADRES like ''%#^' + ID + '$%'' and';
+      ID := IntToStr(Integer(editRegion.Items.Objects[editRegion.ItemIndex]));
+      Req2 := ' ADRES like ''%#*' + ID + '$%'' and';
     end;
     Req3 := '';
-    if editType.ItemIndex > 0 then
+    if editCity.ItemIndex > 0 then
     begin
-      ID := IntToStr(Integer(editType.Items.Objects[editType.ItemIndex]));
-      Req3 := ' FIRMTYPE like ''%#' + ID + '$%'' and';
+      ID := IntToStr(Integer(editCity.Items.Objects[editCity.ItemIndex]));
+      Req3 := ' ADRES like ''%#^' + ID + '$%'' and';
     end;
-    Req4 := ' ACTIVITY = 1 and';
+    Req4 := '';
+    if editFirmType.ItemIndex > 0 then
+    begin
+      ID := IntToStr(Integer(editFirmType.Items.Objects[editFirmType.ItemIndex]));
+      Req4 := ' FIRMTYPE like ''%#' + ID + '$%'' and';
+    end;
+    Req5 := ' ACTIVITY = 1 and';
   end;
 
 begin
@@ -508,7 +535,7 @@ begin
   SGFirm.ClearRows;
   IBQuery1.Close;
   BuildRequest;
-  ReqMain := 'select ID,NAME,REKLAMA from BASE where' + Req1 + Req2 + Req3 + Req4;
+  ReqMain := 'select ID,NAME,REKLAMA from BASE where' + Req1 + Req2 + Req3 + Req4 + Req5;
   delete(ReqMain, Length(ReqMain) - 3, 4);
   IBQuery1.SQL.Text := ReqMain;
   // showmessage(reqmain); exit;
@@ -597,7 +624,7 @@ var
   i: integer;
 begin
   editRubrikator.Clear;
-  editRubrikator.Items.Add('Все рубрики');
+  editRubrikator.Items.Add(STR_DEFAULT_RUBRIKA);
   editRubrikator.ItemIndex := 0;
   IBQuery1.Close;
   IBQuery1.SQL.Text := 'select * from RUBRIKATOR order by lower(NAME)';
@@ -605,55 +632,95 @@ begin
   IBQuery1.FetchAll := True;
   if IBQuery1.RecordCount = 0 then
     exit;
+  editRubrikator.Items.BeginUpdate;
   for i := 1 to IBQuery1.RecordCount do
   begin
     editRubrikator.AddItem(IBQuery1.FieldValues['NAME'], Pointer(Integer(IBQuery1.FieldValues['ID'])));
     IBQuery1.Next;
   end;
+  editRubrikator.Items.EndUpdate;
   IBQuery1.Close;
   // IBDatabase1.Close;
 end;
 
-procedure TFormMain.GetGorodList;
+procedure TFormMain.GetRegionList;
 var
   i: integer;
 begin
-  editGorod.Clear;
-  editGorod.Items.Add('Все города');
-  editGorod.ItemIndex := 0;
+  editRegion.Clear;
+  editRegion.Items.Add(STR_DEFAULT_REGION);
+  editRegion.Reset;
   IBQuery1.Close;
-  IBQuery1.SQL.Text := 'select * from CITY where ACTIVITY = 1 order by lower(NAME)';
+  IBQuery1.SQL.Text := 'select * from REGION order by lower(NAME)';
   IBQuery1.Open;
   IBQuery1.FetchAll := True;
   if IBQuery1.RecordCount = 0 then
     exit;
+  editRegion.Items.BeginUpdate;
   for i := 1 to IBQuery1.RecordCount do
   begin
-    editGorod.AddItem(IBQuery1.FieldValues['NAME'], Pointer(Integer(IBQuery1.FieldValues['ID'])));
+    editRegion.AddItem(IBQuery1.FieldValues['NAME'], Pointer(Integer(IBQuery1.FieldValues['ID'])));
+    if (VarToStrDef(IBQuery1.FieldValues['NAME_ALT'], EmptyStr)) <> EmptyStr then
+      editRegion.AddItem(IBQuery1.FieldValues['NAME_ALT'], Pointer(Integer(IBQuery1.FieldValues['ID'])));
     IBQuery1.Next;
   end;
+  editRegion.Items.EndUpdate;
   IBQuery1.Close;
   // IBDatabase1.Close;
 end;
 
-procedure TFormMain.GetOfficeTypeList;
+procedure TFormMain.GetCityList(ID_Region: integer = -1);
 var
   i: integer;
 begin
-  editType.Clear;
-  editType.Items.Add('Все фирмы');
-  editType.ItemIndex := 0;
+  editCity.Clear;
+  editCity.Items.Add(STR_DEFAULT_CITY);
+  editCity.Reset;
+  IBQuery1.Close;
+  if ID_Region = -1 then
+    IBQuery1.SQL.Text := 'select * from CITY where ACTIVITY = 1 order by lower(NAME)'
+  else
+  begin
+    IBQuery1.SQL.Text := 'select * from CITY where (ACTIVITY = 1) and (ID_REGION = :ID_REGION) order by lower(NAME)';
+    IBQuery1.ParamByName('ID_REGION').AsInteger := ID_Region;
+  end;
+  IBQuery1.Open;
+  IBQuery1.FetchAll := True;
+  if IBQuery1.RecordCount = 0 then
+    exit;
+  editCity.Items.BeginUpdate;
+  for i := 1 to IBQuery1.RecordCount do
+  begin
+    editCity.AddItem(IBQuery1.FieldValues['NAME'], Pointer(Integer(IBQuery1.FieldValues['ID'])));
+    if (VarToStrDef(IBQuery1.FieldValues['NAME_ALT'], EmptyStr)) <> EmptyStr then
+      editCity.AddItem(IBQuery1.FieldValues['NAME_ALT'], Pointer(Integer(IBQuery1.FieldValues['ID'])));
+    IBQuery1.Next;
+  end;
+  editCity.Items.EndUpdate;
+  IBQuery1.Close;
+  // IBDatabase1.Close;
+end;
+
+procedure TFormMain.GetFirmTypeList;
+var
+  i: integer;
+begin
+  editFirmType.Clear;
+  editFirmType.Items.Add(STR_DEFAULT_FIRMTYPE);
+  editFirmType.ItemIndex := 0;
   IBQuery1.Close;
   IBQuery1.SQL.Text := 'select * from FIRMTYPE order by lower(NAME)';
   IBQuery1.Open;
   IBQuery1.FetchAll := True;
   if IBQuery1.RecordCount = 0 then
     exit;
+  editFirmType.Items.BeginUpdate;
   for i := 1 to IBQuery1.RecordCount do
   begin
-    editType.AddItem(IBQuery1.FieldValues['NAME'], Pointer(Integer(IBQuery1.FieldValues['ID'])));
+    editFirmType.AddItem(IBQuery1.FieldValues['NAME'], Pointer(Integer(IBQuery1.FieldValues['ID'])));
     IBQuery1.Next;
   end;
+  editFirmType.Items.EndUpdate;
   IBQuery1.Close;
   // IBDatabase1.Close;
 end;
@@ -720,39 +787,94 @@ begin
   editRubrikator.Tag := editRubrikator.ItemIndex;
 end;
 
-procedure TFormMain.editGorodKeyPress(Sender: TObject; var Key: Char);
+procedure TFormMain.editRegionOrCityChange(Sender: TObject);
+var
+  edit: TsComboBoxEx;
 begin
-  if Key = #13 then
+  edit := Sender as TsComboBoxEx;
+  if edit.Items.IndexOf(edit.Text) <> 0 then
   begin
-
-    if Trim(editGorod.Text) = EmptyStr then
-    begin
-      editGorod.ItemIndex := 0;
-      editGorodSelect(editGorod);
-      exit;
-    end;
-
-    if editGorod.Items.IndexOf(editGorod.Text) = -1 then
-      editGorod.ItemIndex := editGorod.Tag
-    else
-      editGorodSelect(editGorod);
+    if edit.Name = 'editRegion' then
+      btnRegionReset.Visible := True
+    else if edit.Name = 'editCity' then
+      btnCityReset.Visible := True;
+    edit.Width := 198;
+  end
+  else
+  begin
+    if edit.Name = 'editRegion' then
+      btnRegionReset.Visible := False
+    else if edit.Name = 'editCity' then
+      btnCityReset.Visible := False;
+    edit.Width := 220;
   end;
 end;
 
-procedure TFormMain.editGorodSelect(Sender: TObject);
+procedure TFormMain.editRegionOrCityKeyPress(Sender: TObject; var Key: Char);
+var
+  edit: TsComboBoxEx;
 begin
-  if (Sender as TsComboBoxEx).Tag <> (Sender as TsComboBoxEx).ItemIndex then
+  if Key = #13 then
+  begin
+    edit := Sender as TsComboBoxEx;
+    if Trim(edit.Text) = EmptyStr then
+    begin
+      edit.ItemIndex := 0;
+      editRegionOrCitySelect(edit);
+      exit;
+    end;
+
+    if edit.Items.IndexOf(edit.Text) = -1 then
+      edit.ItemIndex := edit.Tag
+    else
+      editRegionOrCitySelect(edit);
+  end;
+end;
+
+procedure TFormMain.editRegionOrCitySelect(Sender: TObject);
+var
+  edit: TsComboBoxEx;
+begin
+  edit := Sender as TsComboBoxEx;
+  if edit.Tag <> edit.ItemIndex then
   begin
     if sPageControl1.ActivePageIndex = 0 then
       SGFirm.SetFocus;
     if sPageControl1.ActivePageIndex = 1 then
       SGNapr.SetFocus;
+
+    if (edit.Name = 'editRegion') then
+    begin
+      if edit.ItemIndex = 0 then
+        GetCityList
+      else
+        GetCityList(Integer(edit.Items.Objects[edit.ItemIndex]));
+    end;
+
     GetData;
   end;
-  (Sender as TsComboBoxEx).Tag := (Sender as TsComboBoxEx).ItemIndex;
+  edit.Tag := edit.ItemIndex;
 end;
 
-procedure TFormMain.editTypeSelect(Sender: TObject);
+procedure TFormMain.btnRegionOrCityResetClick(Sender: TObject);
+var
+  btn: TsSpeedButton;
+begin
+  btn := Sender as TsSpeedButton;
+  if btn.Name = 'btnRegionReset' then
+  begin
+    editRegion.Reset;
+    GetCityList;
+    GetData;
+  end
+  else if btn.Name = 'btnCityReset' then
+  begin
+    editCity.Reset;
+    GetData;
+  end;
+end;
+
+procedure TFormMain.editFirmTypeSelect(Sender: TObject);
 begin
   if (Sender as TsComboBox).Tag <> (Sender as TsComboBox).ItemIndex then
   begin
@@ -802,7 +924,7 @@ begin
 
   FormFirmInfo.lblID.Caption := ID;
 
-  ID_Lang:= IBQuery1.FieldByName('ID_Lang').AsInteger;
+  ID_Lang := IBQuery1.FieldByName('ID_Lang').AsInteger;
 
   if IBQuery1.FieldValues['NAME'] <> null then
   begin
@@ -1053,7 +1175,6 @@ begin
   end;
 end;
 
-
 function TFormMain.ParseAdresFieldToEntriesList(Field_ADRES_LineByIndex: string): TStringList;
 var
   Entry: string;
@@ -1115,14 +1236,16 @@ end;
 
 procedure TFormMain.BtnResetDataClick(Sender: TObject);
 begin
-  if (editRubrikator.ItemIndex = 0) and (editGorod.ItemIndex = 0) and (editType.ItemIndex = 0) and (Trim(editSearch.Text) = '') then
+  if (editRubrikator.ItemIndex = 0) and (editRegion.Text = STR_DEFAULT_REGION) and (editCity.Text = STR_DEFAULT_CITY) and
+    (editFirmType.ItemIndex = 0) and (Trim(editSearch.Text) = '') then
     exit;
   editRubrikator.ItemIndex := 0;
   editRubrikator.Tag := 0;
-  editGorod.ItemIndex := 0;
-  editGorod.Tag := 0;
-  editType.ItemIndex := 0;
-  editType.Tag := 0;
+  editRegion.Reset;
+  GetCityList;
+  editCity.Reset;
+  editFirmType.ItemIndex := 0;
+  editFirmType.Tag := 0;
   editSearch.Text := '';
   GetData;
 end;

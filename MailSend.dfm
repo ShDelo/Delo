@@ -212,6 +212,8 @@ object FormMailSend: TFormMailSend
         0000000000000000000000000000000000000000000000000000}
       OnClick = btnSendClick
       SkinData.SkinSection = 'PAGECONTROL'
+      Images = FormMain.ImageList32
+      ImageIndex = 5
     end
     object sGauge1: TsGauge
       Left = 12
