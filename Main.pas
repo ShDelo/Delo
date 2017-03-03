@@ -95,6 +95,7 @@ type
     procedure GetOfficeTypeList;
     procedure GetNaprList;
     procedure OpenFirmByID(ID: string; ShowForm: Boolean);
+    function ParseAdresFieldToEntriesList(Field_ADRES_LineByIndex: string): TStringList;
     function GetNameByID(table, id: string): string;
     procedure SGAfterSort(Sender: TObject; ACol: Integer);
     procedure editRubrikatorChange(Sender: TObject);
@@ -497,7 +498,7 @@ var
     if editType.ItemIndex > 0 then
     begin
       ID := IntToStr(Integer(editType.Items.Objects[editType.ItemIndex]));
-      Req3 := ' TYPE like ''%#' + ID + '$%'' and';
+      Req3 := ' FIRMTYPE like ''%#' + ID + '$%'' and';
     end;
     Req4 := ' ACTIVITY = 1 and';
   end;
@@ -621,7 +622,7 @@ begin
   editGorod.Items.Add('Все города');
   editGorod.ItemIndex := 0;
   IBQuery1.Close;
-  IBQuery1.SQL.Text := 'select * from GOROD where ACTIVITY = 1 order by lower(NAME)';
+  IBQuery1.SQL.Text := 'select * from CITY where ACTIVITY = 1 order by lower(NAME)';
   IBQuery1.Open;
   IBQuery1.FetchAll := True;
   if IBQuery1.RecordCount = 0 then
@@ -643,7 +644,7 @@ begin
   editType.Items.Add('Все фирмы');
   editType.ItemIndex := 0;
   IBQuery1.Close;
-  IBQuery1.SQL.Text := 'select * from TYPE order by lower(NAME)';
+  IBQuery1.SQL.Text := 'select * from FIRMTYPE order by lower(NAME)';
   IBQuery1.Open;
   IBQuery1.FetchAll := True;
   if IBQuery1.RecordCount = 0 then
@@ -766,9 +767,9 @@ end;
 
 procedure TFormMain.OpenFirmByID(ID: string; ShowForm: Boolean);
 var
-  EmailAll, EmailCurrent, WebAll, WebCurrent, AdresAll, AdresCurrent: string;
+  EmailAll, EmailCurrent, WebAll, WebCurrent: string;
   PhonesAll, PhonesCurrent, NaprAll, NaprCurrent: string;
-  city_str, country_str, ofType, zip_str, adres: string;
+  country_str, region_str, city_str, ofType, zip_str, adres: string;
   ReklamaStr, BannerMain, Site: string;
   List1, List2: TStrings;
   i: integer;
@@ -808,24 +809,13 @@ begin
 
   AddColoredLine('Адреса:', clMaroon, 10, 'Tahoma', [fsBold]);
   List1 := TStringList.Create;
-  List2 := TStringList.Create;
   List1.Text := IBQuery1.FieldValues['ADRES'];
   PhonesAll := IBQuery1.FieldValues['PHONES'];
   for i := 0 to List1.Count - 1 do
   begin
-    AdresAll := List1[i];
-    { AdresAll = #CBAdres$#NUM$#OfficeType$#ZIP$#Street$#Country$#City$ }
-    List2.Clear;
-    while pos('$', AdresAll) > 0 do
-    begin
-      AdresCurrent := copy(AdresAll, 0, pos('$', AdresAll));
-      delete(AdresAll, 1, length(AdresCurrent));
-      delete(AdresCurrent, 1, 1);
-      delete(AdresCurrent, length(AdresCurrent), 1);
-      List2.Add(AdresCurrent);
-      // list2[0] = CBAdres; list2[1] = NO; list2[2] = OfficeType; list2[3] = ZIP;
-      // list2[4] = Street; list2[5] = Country; list2[6] = City;
-    end;
+    List2 := ParseAdresFieldToEntriesList(List1[i]);
+    // list2[0] = CBAdres; list2[1] = NO; list2[2] = OfficeType; list2[3] = ZIP;
+    // list2[4] = Street; list2[5] = Country; list2[6] = Region; list2[7] = City;
 
     PhonesCurrent := copy(PhonesAll, 0, pos('$', PhonesAll));
     delete(PhonesAll, 1, length(PhonesCurrent));
@@ -839,35 +829,34 @@ begin
 
     if list2[0] = '1' then
     begin
-      city_str := list2[6];
-      if city_str[1] = '^' then
-        delete(city_str, 1, 1);
-      country_str := list2[5];
-      if country_str[1] = '&' then
-        delete(country_str, 1, 1);
       ofType := list2[2];
-      if ofType[1] = '@' then
-        delete(ofType, 1, 1);
       zip_str := list2[3];
-      if Trim(ofType) <> '' then
+      country_str := list2[5];
+      region_str := list2[6];
+      city_str := list2[7];
+      if ofType <> EmptyStr then
         ofType := GetNameByID('OFFICETYPE', ofType) + ' - ';
-      if Trim(zip_str) <> '' then
+      if zip_str <> EmptyStr then
         zip_str := zip_str + ', ';
-      if Trim(country_str) <> '' then
+      if country_str <> EmptyStr then
         country_str := GetNameByID('COUNTRY', country_str) + ', ';
-      if Trim(city_str) <> '' then
-        city_str := GetNameByID('GOROD', city_str) + ', ';
-      adres := ofType + zip_str + country_str + city_str + list2[4];
-      { officetype - zip, country, city, street }
-      if Trim(adres) <> '' then
+      if region_str <> EmptyStr then
+        region_str := GetNameByID('REGION', region_str) + ', ';
+      if city_str <> EmptyStr then
+        city_str := GetNameByID('CITY', city_str) + ', ';
+      adres := ofType + zip_str + country_str + region_str + city_str + list2[4];
+      { officetype - zip, country, region, city, street }
+      if Trim(adres) <> EmptyStr then
         AddColoredLine(adres, clBlack, 10, 'Tahoma', []);
-      if Trim(PhonesCurrent) <> '' then
+      if Trim(PhonesCurrent) <> EmptyStr then
         AddColoredLine(PhonesCurrent, clNavy, 10, 'Tahoma', []);
     end;
+
+    List2.Free;
+
   end; // for i := 0 to List1.Count - 1 do
-  AddColoredLine('', clNone, 8, 'Tahoma', []);
+  AddColoredLine(EmptyStr, clNone, 8, 'Tahoma', []);
   List1.Free;
-  List2.Free;
 
   if (IBQuery1.FieldValues['NAPRAVLENIE'] <> null) and (Trim(IBQuery1.FieldValues['NAPRAVLENIE']) <> '') then
   begin
@@ -1056,6 +1045,41 @@ begin
     result := Q.FieldValues['NAME'];
   Q.Close;
   Q.Free;
+end;
+
+function TFormMain.ParseAdresFieldToEntriesList(Field_ADRES_LineByIndex: string): TStringList;
+var
+  Entry: string;
+
+  function RemoveSyntax(str: string): string;
+  begin
+    if Length(Trim(str)) > 0 then
+      if CharInSet(str[1], ['@', '&', '*', '^']) then
+        delete(str, 1, 1);
+    result := str;
+  end;
+
+begin
+  // ResultList[0] = CBAdres; ResultList[1] = NO; ResultList[2] = OfficeType; ResultList[3] = ZIP;
+  // ResultList[4] = Street; ResultList[5] = Country; ResultList[6] = Region; ResultList[7] = City;
+  Result := TStringList.Create;
+
+  while pos('$', Field_ADRES_LineByIndex) > 0 do
+  begin
+    Entry := copy(Field_ADRES_LineByIndex, 0, pos('$', Field_ADRES_LineByIndex));
+    delete(Field_ADRES_LineByIndex, 1, length(Entry));
+    delete(Entry, 1, 1);
+    delete(Entry, length(Entry), 1);
+    Result.Add(Trim(Entry));
+  end;
+
+  if Result[0] = '1' then
+  begin
+    Result[2] := RemoveSyntax(Result[2]);
+    Result[5] := RemoveSyntax(Result[5]);
+    Result[6] := RemoveSyntax(Result[6]);
+    Result[7] := RemoveSyntax(Result[7]);
+  end;
 end;
 
 procedure TFormMain.SGAfterSort(Sender: TObject; ACol: Integer);

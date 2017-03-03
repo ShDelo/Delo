@@ -521,7 +521,7 @@ var
   FullAdresString, FullNaprString, FullWebString, FullEMailString, FullString: string;
   PhonesAll, PhonesCurrent, AdresAll, AdresCurrent, NaprAll, NaprCurrent: string;
   WEBAll, WebCurrent, EMAILAll, EMAILCurrent: string;
-  city_str, country_str, ofType, zip_str, adres: string;
+  country_str, region_str, city_str, ofType, zip_str, adres: string;
 begin
   if ID_List.Count = 0 then
     exit;
@@ -549,25 +549,14 @@ begin
         FullString := '';
 
         List1 := TStringList.Create;
-        List2 := TStringList.Create;
         List1.Text := Q.FieldValues['ADRES'];
         PhonesAll := Q.FieldValues['PHONES'];
         FullAdresString := '';
         for n := 0 to List1.Count - 1 do
         begin
-          AdresAll := List1[n];
-          { AdresAll = #CBAdres$#NUM$#OfficeType$#ZIP$#Street$#Country$#City$ }
-          List2.Clear;
-          while pos('$', AdresAll) > 0 do
-          begin
-            AdresCurrent := copy(AdresAll, 0, pos('$', AdresAll));
-            delete(AdresAll, 1, length(AdresCurrent));
-            delete(AdresCurrent, 1, 1);
-            delete(AdresCurrent, length(AdresCurrent), 1);
-            List2.Add(AdresCurrent);
-            // list2[0] = CBAdres; list2[1] = NO; list2[2] = OfficeType; list2[3] = ZIP;
-            // list2[4] = Street; list2[5] = Country; list2[6] = City;
-          end;
+          List2 := FormMain.ParseAdresFieldToEntriesList(List1[n]);
+          // list2[0] = CBAdres; list2[1] = NO; list2[2] = OfficeType; list2[3] = ZIP;
+          // list2[4] = Street; list2[5] = Country; list2[6] = Region; list2[7] = City;
 
           PhonesCurrent := copy(PhonesAll, 0, pos('$', PhonesAll));
           delete(PhonesAll, 1, length(PhonesCurrent));
@@ -581,34 +570,33 @@ begin
 
           if list2[0] = '1' then
           begin
-            city_str := list2[6];
-            if city_str[1] = '^' then
-              delete(city_str, 1, 1);
-            country_str := list2[5];
-            if country_str[1] = '&' then
-              delete(country_str, 1, 1);
             ofType := list2[2];
-            if ofType[1] = '@' then
-              delete(ofType, 1, 1);
             zip_str := list2[3];
-            if Trim(ofType) <> '' then
+            country_str := list2[5];
+            region_str := list2[6];
+            city_str := list2[7];
+            if ofType <> EmptyStr then
               ofType := FormMain.GetNameByID('OFFICETYPE', ofType) + ' - ';
-            if Trim(zip_str) <> '' then
+            if zip_str <> EmptyStr then
               zip_str := zip_str + ', ';
-            if Trim(country_str) <> '' then
+            if country_str <> EmptyStr then
               country_str := FormMain.GetNameByID('COUNTRY', country_str) + ', ';
-            if Trim(city_str) <> '' then
-              city_str := FormMain.GetNameByID('GOROD', city_str) + ', ';
-            adres := ofType + zip_str + country_str + city_str + list2[4];
-            { officetype - zip, country, city, street }
+            if region_str <> EmptyStr then
+              region_str := FormMain.GetNameByID('REGION', region_str) + ', ';
+            if city_str <> EmptyStr then
+              city_str := FormMain.GetNameByID('CITY', city_str) + ', ';
+            adres := ofType + zip_str + country_str + region_str + city_str + list2[4];
+            { officetype - zip, country, region, city, street }
             if Trim(adres) <> '' then
               FullAdresString := FullAdresString + #13 + adres;
             if Trim(PhonesCurrent) <> '' then
               FullAdresString := FullAdresString + #13 + PhonesCurrent;
           end;
+
+          List2.Free;
+
         end;
         List1.Free;
-        List2.Free;
         if Length(FullAdresString) > 0 then
           if FullAdresString[1] = #13 then
             delete(FullAdresString, 1, 1);

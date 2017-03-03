@@ -114,7 +114,7 @@ begin
       begin { Город }
         QuerySearch := QueryCreate;
         QuerySearch.Close;
-        QuerySearch.SQL.Text := 'select * from GOROD where (lower(NAME) like :NAME) and (ACTIVITY = 1)';
+        QuerySearch.SQL.Text := 'select * from CITY where (lower(NAME) like :NAME) and (ACTIVITY = 1)';
         QuerySearch.ParamByName('NAME').AsString := '%' + SearchString + '%';
         QuerySearch.Open;
         QuerySearch.FetchAll := True;
