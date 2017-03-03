@@ -96,7 +96,7 @@ type
     procedure GetNaprList;
     procedure OpenFirmByID(ID: string; ShowForm: Boolean);
     function ParseAdresFieldToEntriesList(Field_ADRES_LineByIndex: string): TStringList;
-    function GetNameByID(table, id: string): string;
+    function GetNameByID(table, id: string; lang_id: integer = 0): string;
     procedure SGAfterSort(Sender: TObject; ACol: Integer);
     procedure editRubrikatorChange(Sender: TObject);
     procedure SGFirmDblClick(Sender: TObject);
@@ -772,7 +772,7 @@ var
   country_str, region_str, city_str, ofType, zip_str, adres: string;
   ReklamaStr, BannerMain, Site: string;
   List1, List2: TStrings;
-  i: integer;
+  i, ID_Lang: integer;
 
   procedure AddColoredLine(AText: string; AColor: TColor; AFontSize: integer; AFontName: TFontName; AFontStyle: TFontStyles);
   begin
@@ -801,6 +801,8 @@ begin
   FormFirmInfo.reFirmInfo.Clear;
 
   FormFirmInfo.lblID.Caption := ID;
+
+  ID_Lang:= IBQuery1.FieldByName('ID_Lang').AsInteger;
 
   if IBQuery1.FieldValues['NAME'] <> null then
   begin
@@ -839,11 +841,11 @@ begin
       if zip_str <> EmptyStr then
         zip_str := zip_str + ', ';
       if country_str <> EmptyStr then
-        country_str := GetNameByID('COUNTRY', country_str) + ', ';
+        country_str := GetNameByID('COUNTRY', country_str, ID_Lang) + ', ';
       if region_str <> EmptyStr then
-        region_str := GetNameByID('REGION', region_str) + ', ';
+        region_str := GetNameByID('REGION', region_str, ID_Lang) + ', ';
       if city_str <> EmptyStr then
-        city_str := GetNameByID('CITY', city_str) + ', ';
+        city_str := GetNameByID('CITY', city_str, ID_Lang) + ', ';
       adres := ofType + zip_str + country_str + region_str + city_str + list2[4];
       { officetype - zip, country, region, city, street }
       if Trim(adres) <> EmptyStr then
@@ -1029,23 +1031,28 @@ begin
   end;
 end;
 
-function TFormMain.GetNameByID(table, id: string): string;
+function TFormMain.GetNameByID(table, id: string; lang_id: integer = 0): string;
 var
   Q: TIBCQuery;
 begin
-  result := '';
-  if (Trim(table) = '') or (Trim(id) = '') then
+  Result := EmptyStr;
+  if (Trim(table) = EmptyStr) or (Trim(id) = EmptyStr) then
     exit;
   Q := QueryCreate;
-  Q.Close;
-  Q.Sql.Text := 'select * from ' + table + ' where id = ' + id;
-  Q.Open;
-  Q.FetchAll := True;
-  if Q.RecordCount > 0 then
-    result := Q.FieldValues['NAME'];
-  Q.Close;
-  Q.Free;
+  try
+    if lang_id = 0 then
+      Q.SQL.Text := 'select NAME from ' + table + ' where id = ' + id
+    else
+      Q.SQL.Text := 'select NAME_ALT from ' + table + ' where id = ' + id;
+    Q.Open;
+    Q.FetchAll := True;
+    if Q.RecordCount > 0 then
+      Result := VarToStrDef(Q.Fields[0].Value, EmptyStr);
+  finally
+    Q.Free;
+  end;
 end;
+
 
 function TFormMain.ParseAdresFieldToEntriesList(Field_ADRES_LineByIndex: string): TStringList;
 var

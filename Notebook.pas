@@ -513,7 +513,7 @@ end;
 
 procedure TFormNoteBook.PrintRecords(ID_List: TStrings);
 var
-  i, n: integer;
+  i, n, ID_Lang: integer;
   ID: string;
   CDS: TClientDataSet;
   Q: tIBCQuery;
@@ -544,6 +544,7 @@ begin
         Q.Open;
         if Q.RecordCount = 0 then
           Continue;
+        ID_Lang := Q.FieldByName('ID_LANG').AsInteger;
         CDS.Append;
         CDS.FieldByName('NAME').AsString := Q.FieldByName('NAME').AsString;
         FullString := '';
@@ -580,11 +581,11 @@ begin
             if zip_str <> EmptyStr then
               zip_str := zip_str + ', ';
             if country_str <> EmptyStr then
-              country_str := FormMain.GetNameByID('COUNTRY', country_str) + ', ';
+              country_str := FormMain.GetNameByID('COUNTRY', country_str, ID_Lang) + ', ';
             if region_str <> EmptyStr then
-              region_str := FormMain.GetNameByID('REGION', region_str) + ', ';
+              region_str := FormMain.GetNameByID('REGION', region_str, ID_Lang) + ', ';
             if city_str <> EmptyStr then
-              city_str := FormMain.GetNameByID('CITY', city_str) + ', ';
+              city_str := FormMain.GetNameByID('CITY', city_str, ID_Lang) + ', ';
             adres := ofType + zip_str + country_str + region_str + city_str + list2[4];
             { officetype - zip, country, region, city, street }
             if Trim(adres) <> '' then
