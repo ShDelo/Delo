@@ -997,12 +997,12 @@ begin
     AddColoredLine('', clNone, 8, 'Times New Roman', [fsBold]);
   end;
 
-  if (IBQuery1.FieldValues['FIO'] <> null) and (Trim(IBQuery1.FieldValues['FIO']) <> '') then
-  begin
+  { if (IBQuery1.FieldValues['FIO'] <> null) and (Trim(IBQuery1.FieldValues['FIO']) <> '') then
+    begin
     AddColoredLine('Руководитель:', clMaroon, 10, 'Tahoma', [fsBold]);
     AddColoredLine(IBQuery1.FieldValues['FIO'], clBlack, 10, 'Tahoma', []);
     AddColoredLine('', clNone, 8, 'Tahoma', []);
-  end;
+    end; }
 
   if (IBQuery1.FieldValues['WEB'] <> null) and (Trim(IBQuery1.FieldValues['WEB']) <> '') then
   begin
