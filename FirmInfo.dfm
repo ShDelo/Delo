@@ -57,7 +57,7 @@ object FormFirmInfo: TFormFirmInfo
     TabOrder = 1
     SkinData.SkinSection = 'PANEL'
     object lblID: TsLabel
-      Left = 12
+      Left = 4
       Top = 16
       Width = 21
       Height = 13
@@ -71,9 +71,9 @@ object FormFirmInfo: TFormFirmInfo
       Font.Style = []
     end
     object BtnNBAddRec: TsBitBtn
-      Left = 162
+      Left = 152
       Top = 8
-      Width = 117
+      Width = 120
       Height = 25
       Caption = #1047#1072#1087#1080#1089#1085#1072#1103' '#1082#1085#1080#1075#1072
       Font.Charset = DEFAULT_CHARSET
@@ -83,14 +83,16 @@ object FormFirmInfo: TFormFirmInfo
       Font.Style = []
       ParentFont = False
       TabOrder = 3
+      TabStop = False
       OnClick = BtnNBAddRecClick
       ImageIndex = 0
       Images = FormMain.ImageList1
+      ShowFocus = False
       SkinData.CustomFont = True
       SkinData.SkinSection = 'PAGECONTROL'
     end
     object BtnPrint: TsBitBtn
-      Left = 406
+      Left = 405
       Top = 8
       Width = 89
       Height = 25
@@ -102,9 +104,11 @@ object FormFirmInfo: TFormFirmInfo
       Font.Style = []
       ParentFont = False
       TabOrder = 1
+      TabStop = False
       OnClick = BtnPrintClick
       ImageIndex = 4
       Images = FormMain.ImageList1
+      ShowFocus = False
       SkinData.CustomFont = True
       SkinData.SkinSection = 'PAGECONTROL'
     end
@@ -121,16 +125,18 @@ object FormFirmInfo: TFormFirmInfo
       Font.Style = []
       ParentFont = False
       TabOrder = 0
+      TabStop = False
       OnClick = BtnCloseClick
       ImageIndex = 22
       Images = FormMain.ImageList1
+      ShowFocus = False
       SkinData.CustomFont = True
       SkinData.SkinSection = 'PAGECONTROL'
     end
     object BtnDocs: TsBitBtn
-      Left = 46
+      Left = 31
       Top = 8
-      Width = 110
+      Width = 115
       Height = 25
       Caption = #1057#1090#1072#1090#1100#1103' '#1092#1080#1088#1084#1099
       Font.Charset = DEFAULT_CHARSET
@@ -140,17 +146,19 @@ object FormFirmInfo: TFormFirmInfo
       Font.Style = []
       ParentFont = False
       TabOrder = 4
+      TabStop = False
       Visible = False
       OnClick = BtnDocsClick
       ImageIndex = 8
       Images = FormMain.ImageList1
+      ShowFocus = False
       SkinData.CustomFont = True
       SkinData.SkinSection = 'PAGECONTROL'
     end
     object btnSendEmail: TsBitBtn
-      Left = 284
+      Left = 278
       Top = 8
-      Width = 117
+      Width = 122
       Height = 25
       Caption = #1056#1072#1089#1089#1099#1083#1082#1072' '#1087#1086#1095#1090#1099
       Font.Charset = DEFAULT_CHARSET
@@ -160,9 +168,11 @@ object FormFirmInfo: TFormFirmInfo
       Font.Style = []
       ParentFont = False
       TabOrder = 2
+      TabStop = False
       OnClick = btnSendEmailClick
       ImageIndex = 7
       Images = FormMain.ImageList1
+      ShowFocus = False
       SkinData.CustomFont = True
       SkinData.SkinSection = 'PAGECONTROL'
     end
