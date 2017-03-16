@@ -144,6 +144,8 @@ type
   end;
 
 const
+  VER = '1.1.0';
+
   FBUserName: string = 'SYSDBA';
   FBUserPassword: string = 'masterkey';
   MainDB: string = 'usrdt.msq';
